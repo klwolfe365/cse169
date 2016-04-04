@@ -14,15 +14,19 @@
 #include "Joint.h"
 class Skeleton {
 public:
+    static const bool DEBUG = false;
+
     Skeleton();
     ~Skeleton();
     
     bool Load(const char *file);
     void Update(Matrix34 &parent);
     void Draw();
+    void Reset();
     
 private:
     Joint* Root;
+    const char *filename;
 };
 
 #endif /* Skeleton_h */

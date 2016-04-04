@@ -8,12 +8,13 @@
 #include "core.h"
 #include "camera.h"
 #include "cube.h"
+#include "Skeleton.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class Tester {
-public:
-	Tester(int argc,char **argv);
+public:    
+    Tester(int argc,char **argv);
 	~Tester();
 
 	void Update();
@@ -39,7 +40,8 @@ private:
 
 	// Components
 	Camera Cam;
-	SpinningCube Cube;
+	//SpinningCube Cube;
+    Skeleton Skel;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

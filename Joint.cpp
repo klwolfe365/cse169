@@ -7,7 +7,18 @@
 //
 
 #include "Joint.h"
-Joint::Joint(){}
+Joint::Joint(){
+    parent = NULL;
+    W = new Matrix34();
+    L = new Matrix34();
+    Offset = new Vector3(0,0,0);
+    Boxmin = new Vector3(-0.1,-0.1,-0.1);
+    Boxmax = new Vector3(0.1,0.1,0.1);
+    Pose = new Vector3(0,0,0);
+    RotXLimit = new DOF();
+    RotYLimit = new DOF();
+    RotZLimit = new DOF();
+}
 
 bool Joint::Load(Tokenizer &t){
     t.FindToken("{");
@@ -15,38 +26,65 @@ bool Joint::Load(Tokenizer &t){
         char temp[256];
         t.GetToken(temp);
         if(strcmp(temp, "offset")==0){
-            Offset.x = t.GetFloat();
-            Offset.y = t.GetFloat();
-            Offset.z = t.GetFloat();
+            
+            Offset->x = t.GetFloat();
+            Offset->y = t.GetFloat();
+            Offset->z = t.GetFloat();
+            if(DEBUG)
+                printf("Offset: %f %f %f\n", Offset->x, Offset->y, Offset->z);
         }
-        else if(strcmp(temp, "boxmin")){
-            Boxmin.x = t.GetFloat();
-            Boxmin.y = t.GetFloat();
-            Boxmin.z = t.GetFloat();
+        else if(strcmp(temp, "boxmin")==0){
+            Boxmin->x = t.GetFloat();
+            Boxmin->y = t.GetFloat();
+            Boxmin->z = t.GetFloat();
+            if(DEBUG){
+                printf("Boxmin: %f %f %f\n", Boxmin->x, Boxmin->y, Boxmin->
+                       
+                       
+                       z);
+            }
         }
-        else if(strcmp(temp, "boxmax")){
-            Boxmax.x = t.GetFloat();
-            Boxmax.y = t.GetFloat();
-            Boxmax.z = t.GetFloat();
+        else if(strcmp(temp, "boxmax")==0){
+            Boxmax->x = t.GetFloat();
+            Boxmax->y = t.GetFloat();
+            Boxmax->z = t.GetFloat();
+            if(DEBUG){
+                printf("Boxmax: %f %f %f\n", Boxmax->x, Boxmax->y, Boxmax->z);
+            }
         }
-        else if(strcmp(temp, "rotxlimit")){
-            RotXLimit.SetMin(t.GetFloat());
-            RotXLimit.SetMax(t.GetFloat());
+        else if(strcmp(temp, "rotxlimit")==0){
+            RotXLimit->SetMin(t.GetFloat());
+            RotXLimit->SetMax(t.GetFloat());
+            if(DEBUG){
+                printf("RotXLimit: %f %f\n", RotXLimit->GetMin(), RotXLimit->GetMax());
+            }
         }
-        else if(strcmp(temp, "rotylimit")){
-            RotYLimit.SetMin(t.GetFloat());
-            RotYLimit.SetMax(t.GetFloat());
+        else if(strcmp(temp, "rotylimit")==0){
+            RotYLimit->SetMin(t.GetFloat());
+            RotYLimit->SetMax(t.GetFloat());
+            if(DEBUG){
+                printf("RotXLimit: %f %f\n", RotYLimit->GetMin(), RotYLimit->GetMax());
+            }
         }
-        else if(strcmp(temp, "rotzlimit")){
-            RotZLimit.SetMin(t.GetFloat());
-            RotZLimit.SetMax(t.GetFloat());
+        else if(strcmp(temp, "rotzlimit")==0){
+            RotZLimit->SetMin(t.GetFloat());
+            RotZLimit->SetMax(t.GetFloat());
+            if(DEBUG){
+                printf("RotZLimit: %f %f\n", RotZLimit->GetMin(), RotZLimit->GetMax());
+            }
         }
-        else if(strcmp(temp, "pose")){
-            Pose.x = t.GetFloat();
-            Pose.y = t.GetFloat();
-            Pose.z = t.GetFloat();
+        else if(strcmp(temp, "pose")==0){
+            Pose->x = t.GetFloat();
+            Pose->y = t.GetFloat();
+            Pose->z = t.GetFloat();
+            if(DEBUG){
+                printf("Pose: %f %f %f\n", Pose->x, Pose->y, Pose->z);
+            }
         }
         else if(strcmp(temp,"balljoint")==0){
+            if(DEBUG){
+                printf("--------------------New Balljoint--------------------\n");
+            }
             Joint *j = new Joint();
             j->Load(t);
             AddChild(j);
@@ -59,9 +97,57 @@ bool Joint::Load(Tokenizer &t){
     return false;
 }
 
-void Joint::Update(Matrix34 &parent){}
+void Joint::Initialize(){
+    
+    RotXLimit->SetValue(Pose->x);
+    RotYLimit->SetValue(Pose->y);
+    RotZLimit->SetValue(Pose->z);
+    
+    ClampValues();
+    
+    Matrix34 rotations = Matrix34();
+    rotations.Identity();
+    //Initialize any rotations
+    rotations.MakeRotateX(RotXLimit->GetValue());
+    L->Dot(rotations, *L);
+    rotations.MakeRotateY(RotYLimit->GetValue());
+    L->Dot(rotations, *L);
+    rotations.MakeRotateZ(RotZLimit->GetValue());
+    L->Dot(rotations, *L);
+    //Initialize any translations
+    rotations.MakeTranslate(*Offset);
+    L->Dot(rotations, *L);
+    
+    for(Joint *j : children){
+        j->Initialize();
+    }
 
-void Joint::Draw(){}
+
+}
+
+void Joint::Update(){
+    //Compute LocalMatrix
+//    L->MakeTranslate(*Offset);
+    
+    //Compute WorldMatrix - base of parent for all joints except Root
+    if(parent != NULL)
+        W->Dot(*(parent->W), *L);
+    else
+        W->Dot(Matrix34(), *L);
+
+    for(Joint *j : children){
+        j->Update();
+    }
+}
+
+void Joint::Draw(){
+    glLoadMatrixf(*W);
+    drawWireBox(Boxmin->x, Boxmin->y, Boxmin->z, Boxmax->x, Boxmax->y, Boxmax->z);
+    
+    for(Joint *j : children){
+        j->Draw();
+    }
+}
 
 void Joint::AddChild(Joint* j){
     j->parent = this;
@@ -72,4 +158,27 @@ void Joint::AddChild(Joint* j){
 Matrix34* Joint::MakeLocalMatrix(){
 
     return new Matrix34();
+}
+
+void Joint::ClampValues(){
+    if(Pose->x > RotXLimit->GetMax()){
+        RotXLimit->SetValue(RotXLimit->GetMax());
+    } else if(Pose->x < RotXLimit->GetMin()){
+        RotXLimit->SetValue(RotXLimit->GetMin());
+    }
+    
+    if(Pose->y > RotYLimit->GetMax()){
+        RotYLimit->SetValue(RotYLimit->GetMax());
+    } else if(Pose->y < RotYLimit->GetMin()){
+        RotYLimit->SetValue(RotYLimit->GetMin());
+    }
+    
+    if(Pose->z > RotZLimit->GetMax()){
+        RotZLimit->SetValue(RotZLimit->GetMax());
+    } else if(Pose->z < RotZLimit->GetMin()){
+        RotZLimit->SetValue(RotZLimit->GetMin());
+    }
+    
+    if(DEBUG)
+        printf("Rotation Values: %f, %f, %f\n", RotXLimit->GetValue(), RotYLimit->GetValue(), RotZLimit->GetValue());
 }

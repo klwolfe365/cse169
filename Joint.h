@@ -18,30 +18,34 @@
 
 class Joint{
 public:
+    static const bool DEBUG = true;
     Joint();
     ~Joint();
     
     bool Load(Tokenizer &t);
-    void Update(Matrix34 &parent);
+    void Initialize();
+    void Update();
     void Draw();
     void AddChild(Joint *j);
     Matrix34* MakeLocalMatrix();
     
 private:
-    Vector3 Offset;
-    Vector3 Boxmin;
-    Vector3 Boxmax;
-    Vector3 Pose;
-    DOF RotXLimit;
-    DOF RotYLimit;
-    DOF RotZLimit;
+    Vector3 *Offset;
+    Vector3 *Boxmin;
+    Vector3 *Boxmax;
+    Vector3 *Pose;
+    DOF *RotXLimit;
+    DOF *RotYLimit;
+    DOF *RotZLimit;
     
-    Matrix34 W;
-    Matrix34 L;
+    Matrix34 *W;
+    Matrix34 *L;
     std::list<DOF *> dofs;
     Joint *parent;
     std::list<Joint *> children;
     //List<Joint *> siblings;
+    
+    void ClampValues();
     
 };
 

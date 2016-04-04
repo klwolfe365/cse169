@@ -60,6 +60,14 @@ Tester::Tester(int argc,char **argv) {
 	// Initialize components
 
 	Cam.SetAspect(float(WinX)/float(WinY));
+    
+    const char * filename;
+    if(argv[1])
+        filename = argv[1];
+    else
+        filename = "/Users/karen/cse169/skeletons/test.skel";
+    printf("%s\n",filename);
+    Skel.Load(filename);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +82,9 @@ Tester::~Tester() {
 void Tester::Update() {
 	// Update the components in the world
 	Cam.Update();
-	Cube.Update();
+	//Cube.Update();
+    Matrix34 identity = Matrix34();
+    Skel.Update(identity);
 
 	// Tell glut to re-display the scene
 	glutSetWindow(WindowHandle);
@@ -87,7 +97,8 @@ void Tester::Reset() {
 	Cam.Reset();
 	Cam.SetAspect(float(WinX)/float(WinY));
 
-	Cube.Reset();
+	//Cube.Reset();
+    Skel.Reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +111,8 @@ void Tester::Draw() {
 
 	// Draw components
 	Cam.Draw();		// Sets up projection & viewing matrices
-	Cube.Draw();
+//	Cube.Draw();
+    Skel.Draw();
 
 	// Finish drawing scene
 	glFinish();

@@ -13,6 +13,7 @@
 class DOF{
 public:
     DOF();
+    DOF(float min, float max, float value);
     ~DOF();
     
     void SetValue(float v)  { value = v; }
