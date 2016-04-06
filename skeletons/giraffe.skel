@@ -1,0 +1,85 @@
+balljoint root {
+    offset 0 0 0
+    boxmin -0.2 -0.3 -0.4
+    boxmax 0.2 0.3 0.4
+    pose 0 0.1 0
+    balljoint neck {
+        offset 0 0.3 0.3
+        boxmin -0.1 0 -0.1
+        boxmax 0.1 1 0.1
+        balljoint head {
+            offset 0 0.9 0.1
+            boxmin -0.1 -0.1 0
+            boxmax 0.1 0.1 0.35
+            rotxlimit -0.9 0.9
+            rotylimit -1 1
+            pose 0.5 0.5 0
+        }
+    }
+    balljoint leg_fl{
+        offset 0.15 -0.3 0.35
+        boxmin -0.05 0 -0.05
+        boxmax 0.05 -0.4 0.05
+        rotxlimit -1 1
+        rotylimit -0.5 0.5
+        rotzlimit -0.25 0.25
+        pose 0.5 0 0
+        balljoint knee_fl{
+            offset 0 -0.4 0
+            boxmin -0.05 0 -0.05
+            boxmax 0.05 -0.6 0.05
+            rotxlimit -1.5 0
+            pose -0.5 0 0
+        }
+    }
+    balljoint leg_fr{
+        offset -0.15 -0.3 0.35
+        boxmin -0.05 0 -0.05
+        boxmax 0.05 -0.4 0.05
+        rotxlimit -1 1
+        rotylimit -0.5 0.5
+        rotzlimit -0.25 0.25
+        pose 0.5 0 0
+        balljoint knee_fr{
+            offset 0 -0.4 0
+            boxmin -0.05 0 -0.05
+            boxmax 0.05 -0.6 0.05
+            rotxlimit -1.5 0
+            pose -0.5 0 0
+        }
+    }
+    balljoint leg_bl{
+        offset 0.15 -0.3 -0.35
+        boxmin -0.05 0 -0.05
+        boxmax 0.05 -0.4 0.05
+        balljoint knee_bl{
+            offset 0 -0.4 0
+            boxmin -0.05 0 -0.05
+            boxmax 0.05 -0.6 0.05
+            rotxlimit -1.5 0
+            pose -0.5 0 0
+        }
+    }
+    balljoint leg_br{
+        offset -0.15 -0.3 -0.35
+        boxmin -0.05 0 -0.05
+        boxmax 0.05 -0.4 0.05
+        balljoint knee_bl{
+            offset 0 -0.4 0
+            boxmin -0.05 0 -0.05
+            boxmax 0.05 -0.6 0.05
+            rotxlimit -1.5 0
+            pose -0.5 0 0
+        }
+    }
+    balljoint tail{
+        offset 0 0.3 -0.4
+        boxmin -0.025 0 0
+        boxmax 0.025 0.3 0.1
+        rotxlimit -3 -2
+        rotylimit 0 0
+        rotzlimit -1 1
+        pose -2.75 0 0
+
+    }
+}
