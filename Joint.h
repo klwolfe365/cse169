@@ -18,7 +18,7 @@
 
 class Joint{
 public:
-    static const bool DEBUG = true;
+    static const bool DEBUG = false;
     Joint();
     ~Joint();
     
@@ -30,16 +30,16 @@ public:
     Matrix34* MakeLocalMatrix();
     
 private:
-    Vector3 *Offset;
-    Vector3 *Boxmin;
-    Vector3 *Boxmax;
-    Vector3 *Pose;
-    DOF *RotXLimit;
-    DOF *RotYLimit;
-    DOF *RotZLimit;
+    Vector3 Offset;
+    Vector3 Boxmin;
+    Vector3 Boxmax;
+    Vector3 Pose;
+    DOF RotXLimit;
+    DOF RotYLimit;
+    DOF RotZLimit;
     
-    Matrix34 *W;
-    Matrix34 *L;
+    Matrix34 W;
+    Matrix34 L;
     std::list<DOF *> dofs;
     Joint *parent;
     std::list<Joint *> children;

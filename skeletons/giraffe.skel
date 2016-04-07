@@ -57,7 +57,7 @@ balljoint root {
             boxmin -0.05 0 -0.05
             boxmax 0.05 -0.6 0.05
             rotxlimit -1.5 0
-            pose -0.5 0 0
+            pose -0.3 0 0
         }
     }
     balljoint leg_br{
@@ -69,7 +69,7 @@ balljoint root {
             boxmin -0.05 0 -0.05
             boxmax 0.05 -0.6 0.05
             rotxlimit -1.5 0
-            pose -0.5 0 0
+            pose -0.3 0 0
         }
     }
     balljoint tail{
