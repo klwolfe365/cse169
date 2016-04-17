@@ -29,6 +29,9 @@ public:
     void AddChild(Joint *j);
     Matrix34* MakeLocalMatrix();
     
+    int NumberJoints(int n);
+    void Print();
+    
 private:
     Vector3 Offset;
     Vector3 Boxmin;
@@ -45,6 +48,7 @@ private:
     std::list<Joint *> children;
     
     const char* name;
+    int num;
     //List<Joint *> siblings;
     
     void ClampValues();

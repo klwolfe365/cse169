@@ -16,26 +16,30 @@ bool Skin::Load(const char* file){
     Tokenizer t;
     t.Open(file);
 
-    while(1){
+    while(t.GetChar() != EOF){
         char temp[256];
         t.GetToken(temp);
+        //------ Load Vertex Positions ------
         if(strcmp(temp,"positions")==0){
             numVerts = t.GetInt();
-            vertices = new Vertex[numVerts];
+            vertices = std::vector<Vertex *>(numVerts, new Vertex());
             t.FindToken("{");
             int n = 0;
             if(DEBUG)
                 printf("positions %d\n", numVerts);
             while(n < numVerts){
-                vertices[n] = Vertex();
-                vertices[n].SetPosition(Vector3(t.GetFloat(), t.GetFloat(), t.GetFloat()));
-                n++;
+                //vertices[n] = new Vertex();
+                vertices[n]->SetPosition(t.GetFloat(), t.GetFloat(), t.GetFloat());
                 
                 if(DEBUG){
-                    Vector3 pos = vertices[n].GetPosition();
+                    Vector3 pos = vertices[n]->GetPosition();
                     printf("\t%f %f %f\n", pos.x, pos.y, pos.z);
                 }
+                
+                
+                n++;
             }
+        //------ Load Vertex Normals ------
         } else if(strcmp(temp, "normals")==0){
             t.GetInt();
             t.FindToken("{");
@@ -43,15 +47,17 @@ bool Skin::Load(const char* file){
             if(DEBUG)
                 printf("normals %d\n", numVerts);
             while(n < numVerts){
-                vertices[n].SetNormal(Vector3(t.GetFloat(), t.GetFloat(), t.GetFloat()));
-                n++;
+                vertices[n]->SetNormal(t.GetFloat(), t.GetFloat(), t.GetFloat());
                 
                 if(DEBUG){
-                    Vector3 norm = vertices[n].GetNormal();
+                    Vector3 norm = vertices[n]->GetNormal();
                     printf("\t%f %f %f\n", norm.x, norm.y, norm.z);
                 }
+                
+                n++;
             }
-        }else if(strcmp(temp, "skinweights")==0){
+        //------ Load Skin Weights ------
+        } else if(strcmp(temp, "skinweights")==0){
             t.GetInt();
             t.FindToken("{");
             int n = 0;
@@ -76,31 +82,28 @@ bool Skin::Load(const char* file){
                     printf("\n");
                 n++;
             }
+        //------ Load Triangles ------
         } else if(strcmp(temp, "triangles")==0){
             numTriangles = t.GetInt();
-            triangles = new Triangle[numTriangles];
+            triangles = std::vector<Triangle *>(numTriangles);
             t.FindToken("{");
             int n = 0;
             if(DEBUG)
                 printf("triangles %d\n", numTriangles);
             while(n < numTriangles){
-                triangles[n] = Triangle();
-                triangles[n].SetVertices(t.GetInt(), t.GetInt(), t.GetInt());
+                triangles[n] = new Triangle();
+                triangles[n]->SetVertices(t.GetInt(), t.GetInt(), t.GetInt());
                 
                 if(DEBUG){
-                    Triangle t = triangles[n];
-                    printf("\t%d %d %d\n", t.GetVertex1(), t.GetVertex2(), t.GetVertex3());
+                    Triangle *t = triangles[n];
+                    printf("\t%d %d %d\n", t->GetVertex1(), t->GetVertex2(), t->GetVertex3());
                 }
-                
-//                Vertex v1 = vertices[t.GetInt()];
-//                Vertex v2 = vertices[t.GetInt()];
-//                Vertex v3 = vertices[t.GetInt()];
-//                triangle.SetVertices(v1, v2, v3);
                 n++;
             }
+        //------ Load Binding Matrices ------
         } else if(strcmp(temp, "bindings")==0){
             numJoints = t.GetInt();
-            bindings = new Matrix34[numJoints];
+            bindings = std::vector<Matrix34 *>(numJoints);
             int n = 0;
             t.FindToken("{");
             if(DEBUG)
@@ -119,7 +122,7 @@ bool Skin::Load(const char* file){
                 float dx = t.GetFloat();
                 float dy = t.GetFloat();
                 float dz = t.GetFloat();
-                bindings[n] = Matrix34(ax, bx, cx, dx,
+                bindings[n] = new Matrix34(ax, bx, cx, dx,
                          ay, by, cy, dy,
                          az, bz, cz, dz);
                 if(DEBUG){
@@ -132,8 +135,11 @@ bool Skin::Load(const char* file){
                 }
                 n++;
             }
-        } else t.SkipLine();
+        } else {
+            t.SkipLine();
+        }
     }
+    t.Close();
 }
 
 void Skin::PrintSkin(){

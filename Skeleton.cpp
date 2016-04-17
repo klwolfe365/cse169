@@ -23,6 +23,7 @@ bool Skeleton::Load(const char *file){
     Root->Initialize();
     
     token.Close();
+    NumberJoints();
    
     return true;
 }
@@ -36,4 +37,15 @@ void Skeleton::Draw(){
 
 void Skeleton::Reset(){
     Load(filename);
+}
+
+void Skeleton::NumberJoints(){
+    Root->NumberJoints(1);
+}
+
+void Skeleton::PrintJoints(){
+    
+    if(DEBUG)
+        printf("IN SKEL PRINTJOINTS");
+    Root->Print();
 }

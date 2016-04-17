@@ -7,7 +7,9 @@
 //
 
 #include "Triangle.h"
-Triangle::Triangle(){}
+Triangle::Triangle(){
+    v1 = v2 = v3 = -1;
+}
 Triangle::~Triangle(){}
 
 void Triangle::SetVertices(int v1, int v2, int v3){

@@ -18,10 +18,22 @@ void Vertex::SetPosition(Vector3 position){
     Position = position;
 }
 
+void Vertex::SetPosition(float x, float y, float z){
+    Position.x = x;
+    Position.y = y;
+    Position.z = z;
+}
+
 Vector3 Vertex::GetNormal(){
     return Normal;
 }
 
 void Vertex::SetNormal(Vector3 normal){
     Normal = normal;
+}
+
+void Vertex::SetNormal(float x, float y, float z){
+    Normal.x = x;
+    Normal.y = y;
+    Normal.z = z;
 }

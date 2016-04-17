@@ -24,6 +24,8 @@ bool Joint::Load(Tokenizer &t){
     char name[256];
     t.GetToken(name);
     this->name = name;
+    if(DEBUG)
+        printf("Name: %s\n", this->name);
     
     t.FindToken("{");
     while(1){
@@ -99,7 +101,6 @@ bool Joint::Load(Tokenizer &t){
 }
 
 void Joint::Initialize(){
-    
     RotXLimit.SetValue(Pose.x);
     RotYLimit.SetValue(Pose.y);
     RotZLimit.SetValue(Pose.z);
@@ -127,6 +128,8 @@ void Joint::Initialize(){
 }
 
 void Joint::Update(){
+    if(DEBUG)
+        printf("UPDATING");
     //Compute LocalMatrix
 //    L->MakeTranslate(*Offset);
     L = Matrix34();
@@ -197,4 +200,20 @@ void Joint::ClampValues(){
     
     if(DEBUG)
         printf("Rotation Values: %f, %f, %f\n", RotXLimit.GetValue(), RotYLimit.GetValue(), RotZLimit.GetValue());
+}
+
+int Joint::NumberJoints(int n){
+    this->num = n;
+    for(Joint *j : children){
+        j->NumberJoints(++n);
+    }
+    return n;
+}
+
+void Joint::Print(){
+    if(DEBUG)
+        printf("IN PRINT");
+    printf("Name: (%d)%s", num, name);
+    for(Joint *j: children)
+        j->Print();
 }

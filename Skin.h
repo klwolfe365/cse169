@@ -10,6 +10,7 @@
 #define Skin_h
 
 #include <stdio.h>
+#include <vector>
 
 #include "Vertex.h"
 #include "Triangle.h"
@@ -18,7 +19,7 @@
 
 class Skin{
 public:
-    static const bool DEBUG = true;
+    static const bool DEBUG = false;
     Skin();
     ~Skin();
     
@@ -29,9 +30,9 @@ private:
     int numTriangles;
     int numJoints;
     const char* filename;
-    Vertex* vertices;
-    Triangle* triangles;
-    Matrix34* bindings;
+    std::vector<Vertex *> vertices;
+    std::vector<Triangle *> triangles;
+    std::vector<Matrix34 *> bindings;
     
 };
 #endif /* Skin_h */

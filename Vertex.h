@@ -21,8 +21,11 @@ public:
     
     Vector3 GetPosition();
     void SetPosition(Vector3 position);
+    void SetPosition(float x, float y, float z);
     Vector3 GetNormal();
     void SetNormal(Vector3 normal);
+    void SetNormal(float x, float y, float z);
+    
 private:
     Vector3 Position;
     Vector3 Normal;

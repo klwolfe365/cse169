@@ -15,7 +15,7 @@
 #include "Skin.h"
 class Skeleton {
 public:
-    static const bool DEBUG = false;
+    static const bool DEBUG = true;
 
     Skeleton();
     ~Skeleton();
@@ -24,6 +24,9 @@ public:
     void Update(Matrix34 &parent);
     void Draw();
     void Reset();
+    
+    void NumberJoints();
+    void PrintJoints();
     
 private:
     Joint* Root;

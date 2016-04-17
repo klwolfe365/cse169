@@ -66,16 +66,18 @@ Tester::Tester(int argc,char **argv) {
     if(argv[1] && argv[2]){
         skelFilename = argv[1];
         skinFilename = argv[2];
-        
     }
     else{
         skelFilename = "/Users/karen/cse169/skeletons/wasp.skel";
         skinFilename = "/Users/karen/cse169/skins/wasp.skin";
     }
-    printf("%s\n",skelFilename);
+    printf("%s\n",skinFilename);
     Skel.Load(skelFilename);
     SkelSkin.Load(skinFilename);
-    SkelSkin.PrintSkin();
+    printf("Loaded files");
+    //SkelSkin.PrintSkin();
+    
+    //Skel.PrintJoints();
     
 }
 
