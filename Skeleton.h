@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "matrix34.h"
 #include "Joint.h"
+#include "Skin.h"
 class Skeleton {
 public:
     static const bool DEBUG = false;
@@ -26,6 +27,7 @@ public:
     
 private:
     Joint* Root;
+    Skin* skin;
     const char *filename;
 };
 

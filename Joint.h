@@ -43,6 +43,8 @@ private:
     std::list<DOF *> dofs;
     Joint *parent;
     std::list<Joint *> children;
+    
+    const char* name;
     //List<Joint *> siblings;
     
     void ClampValues();

@@ -61,13 +61,22 @@ Tester::Tester(int argc,char **argv) {
 
 	Cam.SetAspect(float(WinX)/float(WinY));
     
-    const char * filename;
-    if(argv[1])
-        filename = argv[1];
-    else
-        filename = "/Users/karen/cse169/skeletons/test.skel";
-    printf("%s\n",filename);
-    Skel.Load(filename);
+    const char * skelFilename;
+    const char * skinFilename;
+    if(argv[1] && argv[2]){
+        skelFilename = argv[1];
+        skinFilename = argv[2];
+        
+    }
+    else{
+        skelFilename = "/Users/karen/cse169/skeletons/wasp.skel";
+        skinFilename = "/Users/karen/cse169/skins/wasp.skin";
+    }
+    printf("%s\n",skelFilename);
+    Skel.Load(skelFilename);
+    SkelSkin.Load(skinFilename);
+    SkelSkin.PrintSkin();
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////

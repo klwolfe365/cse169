@@ -21,6 +21,10 @@ Joint::Joint(){
 }
 
 bool Joint::Load(Tokenizer &t){
+    char name[256];
+    t.GetToken(name);
+    this->name = name;
+    
     t.FindToken("{");
     while(1){
         char temp[256];
@@ -102,6 +106,30 @@ void Joint::Initialize(){
     
     ClampValues();
     
+//    Matrix34 rotations = Matrix34();
+//    rotations.Identity();
+//    //Initialize any rotations
+//    rotations.MakeRotateX(RotXLimit.GetValue());
+//    L.Dot(rotations, L);
+//    rotations.MakeRotateY(RotYLimit.GetValue());
+//    L.Dot(rotations, L);
+//    rotations.MakeRotateZ(RotZLimit.GetValue());
+//    L.Dot(rotations, L);
+//    //Initialize any translations
+//    rotations.MakeTranslate(Offset);
+//    L.Dot(rotations, L);
+    
+    for(Joint *j : children){
+        j->Initialize();
+    }
+
+
+}
+
+void Joint::Update(){
+    //Compute LocalMatrix
+//    L->MakeTranslate(*Offset);
+    L = Matrix34();
     Matrix34 rotations = Matrix34();
     rotations.Identity();
     //Initialize any rotations
@@ -114,17 +142,6 @@ void Joint::Initialize(){
     //Initialize any translations
     rotations.MakeTranslate(Offset);
     L.Dot(rotations, L);
-    
-    for(Joint *j : children){
-        j->Initialize();
-    }
-
-
-}
-
-void Joint::Update(){
-    //Compute LocalMatrix
-//    L->MakeTranslate(*Offset);
 
 
     
