@@ -47,7 +47,7 @@ private:
     Joint *parent;
     std::list<Joint *> children;
     
-    const char* name;
+    char *name;
     int num;
     //List<Joint *> siblings;
     

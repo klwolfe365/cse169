@@ -19,7 +19,7 @@
 
 class Skin{
 public:
-    static const bool DEBUG = false;
+    static const bool DEBUG = true;
     Skin();
     ~Skin();
     

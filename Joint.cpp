@@ -21,11 +21,11 @@ Joint::Joint(){
 }
 
 bool Joint::Load(Tokenizer &t){
-    char name[256];
-    t.GetToken(name);
-    this->name = name;
-    if(DEBUG)
-        printf("Name: %s\n", this->name);
+    char jointname[256];
+    
+    t.GetToken(jointname);
+    name = strdup(jointname);
+    printf("(%lu)Name: %s\n", std::strlen(jointname), name);
     
     t.FindToken("{");
     while(1){
@@ -205,15 +205,13 @@ void Joint::ClampValues(){
 int Joint::NumberJoints(int n){
     this->num = n;
     for(Joint *j : children){
-        j->NumberJoints(++n);
+        n = j->NumberJoints(++n);
     }
     return n;
 }
 
 void Joint::Print(){
-    if(DEBUG)
-        printf("IN PRINT");
-    printf("Name: (%d)%s", num, name);
+    printf("Name: (%d)%s\n", num, name);
     for(Joint *j: children)
         j->Print();
 }

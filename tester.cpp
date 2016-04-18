@@ -77,7 +77,7 @@ Tester::Tester(int argc,char **argv) {
     printf("Loaded files");
     //SkelSkin.PrintSkin();
     
-    //Skel.PrintJoints();
+    Skel.PrintJoints();
     
 }
 

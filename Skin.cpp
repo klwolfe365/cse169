@@ -16,7 +16,7 @@ bool Skin::Load(const char* file){
     Tokenizer t;
     t.Open(file);
 
-    while(t.GetChar() != EOF){
+    while(1){
         char temp[256];
         t.GetToken(temp);
         //------ Load Vertex Positions ------
@@ -65,6 +65,8 @@ bool Skin::Load(const char* file){
                 printf("skinweights %d\n", numVerts);
             while(n < numVerts){
                 int numAttachments = t.GetInt();
+                std::vector<float> weights = std::vector<float>(numVerts, 0.0);
+                //vertices[n]->SetSkinweights(numAttachments);
                 if(DEBUG)
                     printf("\t%d ", numAttachments);
                 int a = 0;
@@ -72,12 +74,13 @@ bool Skin::Load(const char* file){
                     int jointNum = t.GetInt();
                     //TODO Joint j = Skeleton.Joints(t.getInt());
                     float weight = t.GetFloat();
+                    weights[jointNum] = weight;
                     a++;
-                    
                     
                     if(DEBUG)
                         printf("%d %f ", jointNum, weight);
                 }
+                vertices[n]->SetSkinweights(numAttachments, weights);
                 if(DEBUG)
                     printf("\n");
                 n++;
@@ -135,6 +138,7 @@ bool Skin::Load(const char* file){
                 }
                 n++;
             }
+            break;
         } else {
             t.SkipLine();
         }

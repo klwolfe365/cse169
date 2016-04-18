@@ -40,12 +40,9 @@ void Skeleton::Reset(){
 }
 
 void Skeleton::NumberJoints(){
-    Root->NumberJoints(1);
+    Root->NumberJoints(0);
 }
 
 void Skeleton::PrintJoints(){
-    
-    if(DEBUG)
-        printf("IN SKEL PRINTJOINTS");
     Root->Print();
 }
