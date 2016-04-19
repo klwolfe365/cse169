@@ -40,9 +40,39 @@ void Skeleton::Reset(){
 }
 
 void Skeleton::NumberJoints(){
-    Root->NumberJoints(0);
+    totalJointNum = Root->NumberJoints(0);
 }
 
 void Skeleton::PrintJoints(){
     Root->Print();
+}
+
+Joint* Skeleton::GetJoint(int jointNum){
+    return Root->GetJoint(jointNum);
+}
+
+Joint* Skeleton::GetCurrentJoint(){
+    if(currentJoint == NULL)
+        currentJoint = Root;
+    return currentJoint;
+}
+
+Joint* Skeleton::GetNextJoint(){
+    if(currentJointNum >= totalJointNum){
+        currentJointNum = 0;
+        currentJoint = Root;
+    }
+    else
+        currentJoint = GetJoint(++currentJointNum);
+    return currentJoint;
+}
+
+Joint* Skeleton::GetPrevJoint(){
+    if(currentJointNum == 0)
+        currentJointNum = totalJointNum;
+    else
+        --currentJointNum;
+       
+    currentJoint = GetJoint(currentJointNum);
+    return currentJoint;
 }

@@ -74,7 +74,6 @@ Tester::Tester(int argc,char **argv) {
     printf("%s\n",skinFilename);
     Skel.Load(skelFilename);
     SkelSkin.Load(skinFilename);
-    printf("Loaded files");
     //SkelSkin.PrintSkin();
     
     Skel.PrintJoints();
@@ -156,6 +155,24 @@ void Tester::Keyboard(int key,int x,int y) {
 		case 'r':
 			Reset();
 			break;
+        case 'a':
+            Skel.GetPrevJoint();
+            break;
+        case 'd':
+            Skel.GetNextJoint();
+            break;
+        case 'w':
+            Skel.GetCurrentJoint()->GetNextDof();
+            break;
+        case 's':
+            Skel.GetCurrentJoint()->GetPrevDof();
+            break;
+        case '<':
+            Skel.GetCurrentJoint()->GetCurrentDof()->Decrement();
+            break;
+        case '>':
+            Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
+            break;
 	}
 }
 

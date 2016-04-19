@@ -19,3 +19,15 @@ DOF::DOF(float min, float max, float value){
     this->value = value;
 }
 DOF::~DOF(){}
+
+void DOF::Increment(){
+    if(value >= max)
+        return;
+    value += 0.1;
+}
+
+void DOF::Decrement(){
+    if(value <= max)
+        return;
+    value -= 0.1;
+}

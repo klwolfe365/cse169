@@ -18,6 +18,8 @@ Joint::Joint(){
     RotXLimit = DOF();
     RotYLimit = DOF();
     RotZLimit = DOF();
+    name = "NULL";
+    num = -1;
 }
 
 bool Joint::Load(Tokenizer &t){
@@ -25,7 +27,6 @@ bool Joint::Load(Tokenizer &t){
     
     t.GetToken(jointname);
     name = strdup(jointname);
-    printf("(%lu)Name: %s\n", std::strlen(jointname), name);
     
     t.FindToken("{");
     while(1){
@@ -61,6 +62,7 @@ bool Joint::Load(Tokenizer &t){
             if(DEBUG){
                 printf("RotXLimit: %f %f\n", RotXLimit.GetMin(), RotXLimit.GetMax());
             }
+            dofs.push_back(&RotXLimit);
         }
         else if(strcmp(temp, "rotylimit")==0){
             RotYLimit.SetMin(t.GetFloat());
@@ -68,6 +70,7 @@ bool Joint::Load(Tokenizer &t){
             if(DEBUG){
                 printf("RotXLimit: %f %f\n", RotYLimit.GetMin(), RotYLimit.GetMax());
             }
+            dofs.push_back(&RotYLimit);
         }
         else if(strcmp(temp, "rotzlimit")==0){
             RotZLimit.SetMin(t.GetFloat());
@@ -75,6 +78,7 @@ bool Joint::Load(Tokenizer &t){
             if(DEBUG){
                 printf("RotZLimit: %f %f\n", RotZLimit.GetMin(), RotZLimit.GetMax());
             }
+            dofs.push_back(&RotZLimit);
         }
         else if(strcmp(temp, "pose")==0){
             Pose.x = t.GetFloat();
@@ -101,9 +105,7 @@ bool Joint::Load(Tokenizer &t){
 }
 
 void Joint::Initialize(){
-    RotXLimit.SetValue(Pose.x);
-    RotYLimit.SetValue(Pose.y);
-    RotZLimit.SetValue(Pose.z);
+    
     
     ClampValues();
     
@@ -128,8 +130,9 @@ void Joint::Initialize(){
 }
 
 void Joint::Update(){
-    if(DEBUG)
-        printf("UPDATING");
+    RotXLimit.SetValue(Pose.x);
+    RotYLimit.SetValue(Pose.y);
+    RotZLimit.SetValue(Pose.z);
     //Compute LocalMatrix
 //    L->MakeTranslate(*Offset);
     L = Matrix34();
@@ -210,8 +213,54 @@ int Joint::NumberJoints(int n){
     return n;
 }
 
+Joint* Joint::GetJoint(int jointNum){
+    Joint* retVal = NULL;
+    if(jointNum == num)
+        return this;
+    else{
+        for(Joint *j : children){
+            retVal = j->GetJoint(jointNum);
+            if(retVal != NULL)
+                return retVal;
+        }
+    }
+    return retVal;
+}
+
 void Joint::Print(){
     printf("Name: (%d)%s\n", num, name);
     for(Joint *j: children)
         j->Print();
+}
+
+DOF* Joint::GetCurrentDof(){
+    if(currentDof != NULL)
+        return currentDof;
+    else
+        return dofs.front();
+        
+}
+
+DOF* Joint::GetNextDof(){
+    if(dofNum != dofs.end())
+        ++dofNum;
+    else
+        dofNum = dofs.begin();
+    return *dofNum;
+}
+
+DOF* Joint::GetPrevDof(){
+    if(dofNum != dofs.begin())
+        --dofNum;
+    else
+        dofNum = dofs.end();
+    return *dofNum;
+}
+
+const char* Joint::GetName(){
+    return name;
+}
+
+int Joint::GetJointNumber(){
+    return num;
 }

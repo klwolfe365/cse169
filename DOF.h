@@ -16,12 +16,15 @@ public:
     DOF(float min, float max, float value);
     ~DOF();
     
-void SetValue(float v)  { value = v; }
+    void SetValue(float v)  { value = v; }
     void SetMin(float m)    { min = m; }
     void SetMax(float m)    { max = m; }
     float GetValue()        { return value; }
     float GetMin()          { return min; }
     float GetMax()          { return max; }
+    
+    void Increment();
+    void Decrement();
     
 private:
     float min, max;

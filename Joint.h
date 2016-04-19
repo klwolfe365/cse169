@@ -30,7 +30,14 @@ public:
     Matrix34* MakeLocalMatrix();
     
     int NumberJoints(int n);
+    Joint* GetJoint(int jointNum);
     void Print();
+    
+    DOF* GetNextDof();
+    DOF* GetPrevDof();
+    DOF* GetCurrentDof();
+    const char* GetName();
+    int GetJointNumber();
     
 private:
     Vector3 Offset;
@@ -47,8 +54,10 @@ private:
     Joint *parent;
     std::list<Joint *> children;
     
-    char *name;
+    const char *name;
     int num;
+    DOF* currentDof = NULL;
+    std::list<DOF *>::iterator dofNum = dofs.begin();
     //List<Joint *> siblings;
     
     void ClampValues();

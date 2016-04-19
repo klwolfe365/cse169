@@ -27,11 +27,20 @@ public:
     
     void NumberJoints();
     void PrintJoints();
+    Joint* GetJoint(int jointNum);
+    Joint* GetCurrentJoint();
+    Joint* GetNextJoint();
+    Joint* GetPrevJoint();
     
 private:
     Joint* Root;
     Skin* skin;
     const char *filename;
+    
+    
+    Joint* currentJoint = NULL;
+    int currentJointNum;
+    int totalJointNum;
 };
 
 #endif /* Skeleton_h */
