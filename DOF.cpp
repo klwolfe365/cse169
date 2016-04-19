@@ -23,11 +23,11 @@ DOF::~DOF(){}
 void DOF::Increment(){
     if(value >= max)
         return;
-    value += 0.1;
+    value = value + 0.1;
 }
 
 void DOF::Decrement(){
-    if(value <= max)
+    if(value <= min)
         return;
-    value -= 0.1;
+    value = value - 0.1;
 }

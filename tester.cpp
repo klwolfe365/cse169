@@ -167,12 +167,21 @@ void Tester::Keyboard(int key,int x,int y) {
         case 's':
             Skel.GetCurrentJoint()->GetPrevDof();
             break;
-        case '<':
+        case '<':{
+            DOF* dof = Skel.GetCurrentJoint()->GetCurrentDof();
+            printf("JOINT(%s) Current dof %d (%f, %f): value %f\n", Skel.GetCurrentJoint()->GetName(), Skel.GetCurrentJoint()->GetCurrentDofNum(), dof->GetMin(), dof->GetMax(), dof->GetValue());
             Skel.GetCurrentJoint()->GetCurrentDof()->Decrement();
+            printf("New value: %f\n", dof->GetValue());
             break;
-        case '>':
+        }
+        case '>':{
+            DOF* dof = Skel.GetCurrentJoint()->GetCurrentDof();
+            printf("JOINT(%s) Current dof %d (%f, %f): value %f\n", Skel.GetCurrentJoint()->GetName(), Skel.GetCurrentJoint()->GetCurrentDofNum(), dof->GetMin(), dof->GetMax(), dof->GetValue());
             Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
+            
+            printf("New value: %f\n", dof->GetValue());
             break;
+        }
 	}
 }
 

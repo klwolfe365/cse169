@@ -38,6 +38,7 @@ public:
     DOF* GetCurrentDof();
     const char* GetName();
     int GetJointNumber();
+    int GetCurrentDofNum();
     
 private:
     Vector3 Offset;
@@ -57,7 +58,8 @@ private:
     const char *name;
     int num;
     DOF* currentDof = NULL;
-    std::list<DOF *>::iterator dofNum = dofs.begin();
+    int dofNum;
+//    std::list<DOF *>::iterator dofNum = dofs.begin();
     //List<Joint *> siblings;
     
     void ClampValues();

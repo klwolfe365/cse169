@@ -106,21 +106,23 @@ bool Joint::Load(Tokenizer &t){
 
 void Joint::Initialize(){
     
-    
+    RotXLimit.SetValue(Pose.x);
+    RotYLimit.SetValue(Pose.y);
+    RotZLimit.SetValue(Pose.z);
     ClampValues();
     
-//    Matrix34 rotations = Matrix34();
-//    rotations.Identity();
-//    //Initialize any rotations
-//    rotations.MakeRotateX(RotXLimit.GetValue());
-//    L.Dot(rotations, L);
-//    rotations.MakeRotateY(RotYLimit.GetValue());
-//    L.Dot(rotations, L);
-//    rotations.MakeRotateZ(RotZLimit.GetValue());
-//    L.Dot(rotations, L);
-//    //Initialize any translations
-//    rotations.MakeTranslate(Offset);
-//    L.Dot(rotations, L);
+    //    Matrix34 rotations = Matrix34();
+    //    rotations.Identity();
+    //    //Initialize any rotations
+    //    rotations.MakeRotateX(RotXLimit.GetValue());
+    //    L.Dot(rotations, L);
+    //    rotations.MakeRotateY(RotYLimit.GetValue());
+    //    L.Dot(rotations, L);
+    //    rotations.MakeRotateZ(RotZLimit.GetValue());
+    //    L.Dot(rotations, L);
+    //    //Initialize any translations
+    //    rotations.MakeTranslate(Offset);
+    //    L.Dot(rotations, L);
     
     for(Joint *j : children){
         j->Initialize();
@@ -130,11 +132,7 @@ void Joint::Initialize(){
 }
 
 void Joint::Update(){
-    RotXLimit.SetValue(Pose.x);
-    RotYLimit.SetValue(Pose.y);
-    RotZLimit.SetValue(Pose.z);
-    //Compute LocalMatrix
-//    L->MakeTranslate(*Offset);
+    ClampValues();
     L = Matrix34();
     Matrix34 rotations = Matrix34();
     rotations.Identity();
@@ -183,21 +181,21 @@ Matrix34* Joint::MakeLocalMatrix(){
 }
 
 void Joint::ClampValues(){
-    if(Pose.x > RotXLimit.GetMax()){
+    if(RotXLimit.GetValue() > RotXLimit.GetMax()){
         RotXLimit.SetValue(RotXLimit.GetMax());
-    } else if(Pose.x < RotXLimit.GetMin()){
+    } else if(RotXLimit.GetValue() < RotXLimit.GetMin()){
         RotXLimit.SetValue(RotXLimit.GetMin());
     }
     
-    if(Pose.y > RotYLimit.GetMax()){
+    if(RotYLimit.GetValue() > RotYLimit.GetMax()){
         RotYLimit.SetValue(RotYLimit.GetMax());
-    } else if(Pose.y < RotYLimit.GetMin()){
+    } else if(RotYLimit.GetValue() < RotYLimit.GetMin()){
         RotYLimit.SetValue(RotYLimit.GetMin());
     }
     
-    if(Pose.z > RotZLimit.GetMax()){
+    if(RotZLimit.GetValue() > RotZLimit.GetMax()){
         RotZLimit.SetValue(RotZLimit.GetMax());
-    } else if(Pose.z < RotZLimit.GetMin()){
+    } else if(RotZLimit.GetValue() < RotZLimit.GetMin()){
         RotZLimit.SetValue(RotZLimit.GetMin());
     }
     
@@ -234,27 +232,55 @@ void Joint::Print(){
 }
 
 DOF* Joint::GetCurrentDof(){
-    if(currentDof != NULL)
-        return currentDof;
-    else
-        return dofs.front();
-        
+    if(currentDof == NULL){
+    //        printf("dofs size: %d", dofs.size());
+    //        dofNum = dofs.begin();
+    //        currentDof = *dofNum;
+        currentDof = &RotXLimit;
+    }
+    return currentDof;
+    
 }
 
 DOF* Joint::GetNextDof(){
-    if(dofNum != dofs.end())
-        ++dofNum;
+    dofNum = (++dofNum)%3;
+    if(dofNum == 0)
+        currentDof = &RotXLimit;
+    else if(dofNum == 1)
+        currentDof = &RotYLimit;
     else
-        dofNum = dofs.begin();
-    return *dofNum;
+        currentDof = &RotZLimit;
+    
+    return currentDof;
+    //    if(dofNum != dofs.end())
+    //        ++dofNum;
+    //    else
+    //        dofNum = dofs.begin();
+    //    return *dofNum;
 }
 
 DOF* Joint::GetPrevDof(){
-    if(dofNum != dofs.begin())
-        --dofNum;
+    dofNum = (--dofNum)%3;
+    if(dofNum < 0)
+        dofNum = 2;
+    if(dofNum == 0)
+        currentDof = &RotXLimit;
+    else if(dofNum == 1)
+        currentDof = &RotYLimit;
     else
-        dofNum = dofs.end();
-    return *dofNum;
+        currentDof = &RotZLimit;
+    
+    return currentDof;
+    //    if(dofNum != dofs.end())
+    //        ++dofNum;
+    //    else
+    //        dofNum = dofs.begin();
+    //    return *dofNum;
+    //    if(dofNum != dofs.begin())
+    //        --dofNum;
+    //    else
+    //        dofNum = dofs.end();
+    //    return *dofNum;
 }
 
 const char* Joint::GetName(){
@@ -263,4 +289,8 @@ const char* Joint::GetName(){
 
 int Joint::GetJointNumber(){
     return num;
+}
+
+int Joint::GetCurrentDofNum(){
+    return dofNum;
 }
