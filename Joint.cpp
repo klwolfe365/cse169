@@ -162,7 +162,7 @@ void Joint::Update(){
 
 void Joint::Draw(){
     glLoadMatrixf(W);
-    drawWireBox(Boxmin.x, Boxmin.y, Boxmin.z, Boxmax.x, Boxmax.y, Boxmax.z);
+    drawWireBoxColored(Boxmin.x, Boxmin.y, Boxmin.z, Boxmax.x, Boxmax.y, Boxmax.z, color.x, color.y, color.z);
     
     for(Joint *j : children){
         j->Draw();
@@ -224,13 +224,20 @@ DOF* Joint::GetCurrentDof(){
 }
 
 DOF* Joint::GetNextDof(){
+    
     dofNum = (++dofNum)%3;
-    if(dofNum == 0)
+    if(dofNum == 0){
         currentDof = &RotXLimit;
-    else if(dofNum == 1)
+//        color = Vector3(1.0, 0.0, 0.0);
+    }
+    else if(dofNum == 1){
         currentDof = &RotYLimit;
-    else
+//        color = Vector3(0.0, 1.0, 0.0);
+    }
+    else{
         currentDof = &RotZLimit;
+//        color = Vector3(0.0, 0.0, 1.0);
+    }
     
     return currentDof;
     //    if(dofNum != dofs.end())
@@ -244,12 +251,24 @@ DOF* Joint::GetPrevDof(){
     dofNum = (--dofNum)%3;
     if(dofNum < 0)
         dofNum = 2;
-    if(dofNum == 0)
+    if(dofNum == 0){
         currentDof = &RotXLimit;
-    else if(dofNum == 1)
+        color.x = 1.0;
+        color.y = 0.0;
+        color.z = 0.0;
+    }
+    else if(dofNum == 1){
         currentDof = &RotYLimit;
-    else
+        color.x = 0.0;
+        color.y = 1.0;
+        color.z = 0.0;
+    }
+    else{
         currentDof = &RotZLimit;
+        color.x = 0.0;
+        color.y = 0.0;
+        color.z = 1.0;
+    }
     
     return currentDof;
     //    if(dofNum != dofs.end())
@@ -298,3 +317,16 @@ void Joint::ClampValues(){
     if(DEBUG)
         printf("Rotation Values: %f, %f, %f\n", RotXLimit.GetValue(), RotYLimit.GetValue(), RotZLimit.GetValue());
 }
+
+void Joint::SetDOFColor(){
+//    if(dofNum == 0){
+//        color = Vector3(1.0, 0.0, 0.0);
+//    }
+//    else if(dofNum == 1){
+//        color = Vector3(0.0, 1.0, 0.0);
+//    }
+//    else{
+//        color = Vector3(0.0, 0.0, 1.0);
+//    }
+}
+

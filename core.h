@@ -24,6 +24,7 @@
 
 void drawAxis(float size);
 void drawWireBox(float xmin,float ymin,float zmin,float xmax,float ymax,float zmax);
+void drawWireBoxColored(float xmin,float ymin,float zmin,float xmax,float ymax,float zmax, float r, float g, float b);
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -35,4 +35,15 @@ void drawWireBox(float xmin,float ymin,float zmin,float xmax,float ymax,float zm
 	glPopMatrix();
 }
 
+void drawWireBoxColored(float xmin,float ymin,float zmin,float xmax,float ymax,float zmax, float r, float g, float b) {
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+    glTranslatef(0.5f*(xmin+xmax),0.5f*(ymin+ymax),0.5f*(zmin+zmax));
+    glScalef(xmax-xmin,ymax-ymin,zmax-zmin);
+    glColor4f(r,g,b,1.0f);
+    glutWireCube(1.0f);
+    glPopMatrix();
+    glEnable(GL_LIGHTING);
+}
+
 ////////////////////////////////////////////////////////////////////////////////

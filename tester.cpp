@@ -78,6 +78,34 @@ Tester::Tester(int argc,char **argv) {
     
     Skel.PrintJoints();
     
+    /***** LIGHTING *****/
+    GLfloat light_position0[] = { 1.0, 5.0, 1.0, 0.0 };
+    GLfloat spot_direction0[] = { -1.0, -5.0, 0.0 };
+    GLfloat light_position1[] = { 1.0, -5.0, -1.0, 0.0 };
+    GLfloat spot_direction1[] = { -1.0, 5.0, 0.0 };
+    glClearColor (0.0, 0.0, 0.0, 0.0);
+    glShadeModel (GL_SMOOTH);
+    
+    GLfloat light_ambient0[] = { 1.0, 0.0, 1.0, 1.0};
+    GLfloat light_ambient1[] = { 0.0, 1.0, 1.0, 1.0};
+    
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient0);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction0);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0);
+    
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_ambient1);
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction1);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+    
+//    glEnable(GL_LIGHT1);
+    
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_DEPTH_TEST);
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////

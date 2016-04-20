@@ -42,6 +42,9 @@ public:
     int GetJointNumber();
     int GetCurrentDofNum();
     
+    void SetColor(float r, float g, float b) {color.x = r; color.y = g; color.z = b;}
+    void SetDOFColor();
+    
 private:
     Vector3 Offset;
     Vector3 Boxmin;
@@ -61,6 +64,8 @@ private:
     int num;
     DOF* currentDof = NULL;
     int dofNum;
+    
+    Vector3 color = Vector3(1.0, 1.0, 1.0);
 //    std::list<DOF *>::iterator dofNum = dofs.begin();
     //List<Joint *> siblings;
     
