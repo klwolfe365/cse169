@@ -65,7 +65,7 @@ private:
     DOF* currentDof = NULL;
     int dofNum;
     
-    Vector3 color = Vector3(1.0, 1.0, 1.0);
+    Vector3 color;
 //    std::list<DOF *>::iterator dofNum = dofs.begin();
     //List<Joint *> siblings;
     

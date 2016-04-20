@@ -24,6 +24,9 @@ bool Skeleton::Load(const char *file){
     
     token.Close();
     NumberJoints();
+    
+    currentJointNum = 0;
+    currentJoint = joints[0];
    
     return true;
 }
@@ -65,26 +68,29 @@ Joint* Skeleton::GetCurrentJoint(){
 }
 
 Joint* Skeleton::GetNextJoint(){
-//    currentJoint->SetColor(1.0,1.0,1.0);
     if(currentJointNum >= totalJointNum){
         currentJointNum = 0;
         currentJoint = Root;
     }
-    else
+    else{
+        currentJoint->SetColor(1.0,1.0,1.0);
         currentJoint = GetJoint(++currentJointNum);
-//    currentJoint->SetDOFColor();
+    }
+    currentJoint->SetDOFColor();
     return currentJoint;
 }
 
 Joint* Skeleton::GetPrevJoint(){
-//    currentJoint->SetColor(1.0,1.0,1.0);
-    if(currentJointNum == 0)
-        currentJointNum = totalJointNum;
-    else
+    if(currentJointNum <= 0){
+        currentJointNum = totalJointNum - 1;
+    }
+    else{
+        currentJoint->SetColor(1.0,1.0,1.0);
         --currentJointNum;
-       
+    }
+    
     currentJoint = GetJoint(currentJointNum);
-//    currentJoint->SetDOFColor();
+    currentJoint->SetDOFColor();
     return currentJoint;
 }
 

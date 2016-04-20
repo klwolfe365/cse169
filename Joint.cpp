@@ -20,6 +20,8 @@ Joint::Joint(){
     RotZLimit = DOF();
     name = "NULL";
     num = -1;
+    color = Vector3(1.0,1.0,1.0);
+    dofNum = 0;
 }
 
 bool Joint::Load(Tokenizer &t){
@@ -228,14 +230,23 @@ DOF* Joint::GetNextDof(){
     dofNum = (++dofNum)%3;
     if(dofNum == 0){
         currentDof = &RotXLimit;
+        color.x = 1.0;
+        color.y = 0.0;
+        color.z = 0.0;
 //        color = Vector3(1.0, 0.0, 0.0);
     }
     else if(dofNum == 1){
         currentDof = &RotYLimit;
+        color.x = 0.0;
+        color.y = 1.0;
+        color.z = 0.0;
 //        color = Vector3(0.0, 1.0, 0.0);
     }
     else{
         currentDof = &RotZLimit;
+        color.x = 0.0;
+        color.y = 0.0;
+        color.z = 1.0;
 //        color = Vector3(0.0, 0.0, 1.0);
     }
     
@@ -319,14 +330,23 @@ void Joint::ClampValues(){
 }
 
 void Joint::SetDOFColor(){
-//    if(dofNum == 0){
+    if(dofNum <= 0){
+        color.x = 1.0;
+        color.y = 0.0;
+        color.z = 0.0;
 //        color = Vector3(1.0, 0.0, 0.0);
-//    }
-//    else if(dofNum == 1){
+    }
+    else if(dofNum == 1){
+        color.x = 0.0;
+        color.y = 1.0;
+        color.z = 0.0;
 //        color = Vector3(0.0, 1.0, 0.0);
-//    }
-//    else{
+    }
+    else{
+        color.x = 0.0;
+        color.y = 0.0;
+        color.z = 1.0;
 //        color = Vector3(0.0, 0.0, 1.0);
-//    }
+    }
 }
 
