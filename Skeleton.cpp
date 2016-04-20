@@ -68,12 +68,13 @@ Joint* Skeleton::GetCurrentJoint(){
 }
 
 Joint* Skeleton::GetNextJoint(){
-    if(currentJointNum >= totalJointNum){
+    
+    currentJoint->SetColor(1.0,1.0,1.0);
+    if(currentJointNum >= (totalJointNum-1)){
         currentJointNum = 0;
         currentJoint = Root;
     }
     else{
-        currentJoint->SetColor(1.0,1.0,1.0);
         currentJoint = GetJoint(++currentJointNum);
     }
     currentJoint->SetDOFColor();
@@ -81,11 +82,12 @@ Joint* Skeleton::GetNextJoint(){
 }
 
 Joint* Skeleton::GetPrevJoint(){
+    
+    currentJoint->SetColor(1.0,1.0,1.0);
     if(currentJointNum <= 0){
         currentJointNum = totalJointNum - 1;
     }
     else{
-        currentJoint->SetColor(1.0,1.0,1.0);
         --currentJointNum;
     }
     
