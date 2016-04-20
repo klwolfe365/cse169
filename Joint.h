@@ -27,15 +27,17 @@ public:
     void Update();
     void Draw();
     void AddChild(Joint *j);
-    Matrix34* MakeLocalMatrix();
+    
+    Matrix34 GetLocalMatrix();
+    Matrix34 GetWorldMatrix();
     
     int NumberJoints(int n);
     Joint* GetJoint(int jointNum);
     void Print();
     
+    DOF* GetCurrentDof();
     DOF* GetNextDof();
     DOF* GetPrevDof();
-    DOF* GetCurrentDof();
     const char* GetName();
     int GetJointNumber();
     int GetCurrentDofNum();

@@ -11,10 +11,13 @@
 Skin::Skin(){}
 Skin::~Skin(){}
 
-bool Skin::Load(const char* file){
+bool Skin::Load(const char* file, Skeleton* skel){
     filename = file;
+    Skel = skel;
     Tokenizer t;
     t.Open(file);
+    if(DEBUG)
+        printf("Skeleton %s", Skel->GetFileName());
 
     while(1){
         char temp[256];
@@ -22,13 +25,14 @@ bool Skin::Load(const char* file){
         //------ Load Vertex Positions ------
         if(strcmp(temp,"positions")==0){
             numVerts = t.GetInt();
-            vertices = std::vector<Vertex *>(numVerts, new Vertex());
+            vertices = std::vector<Vertex *>(numVerts);
+            updatedVertices = std::vector<Vertex *>(numVerts);
             t.FindToken("{");
             int n = 0;
             if(DEBUG)
                 printf("positions %d\n", numVerts);
             while(n < numVerts){
-                //vertices[n] = new Vertex();
+                vertices[n] = new Vertex();
                 vertices[n]->SetPosition(t.GetFloat(), t.GetFloat(), t.GetFloat());
                 
                 if(DEBUG){
@@ -36,7 +40,8 @@ bool Skin::Load(const char* file){
                     printf("\t%f %f %f\n", pos.x, pos.y, pos.z);
                 }
                 
-                
+                updatedVertices[n] = new Vertex();
+                updatedVertices[n]->SetPosition(vertices[n]->GetPosition());
                 n++;
             }
         //------ Load Vertex Normals ------
@@ -48,7 +53,7 @@ bool Skin::Load(const char* file){
                 printf("normals %d\n", numVerts);
             while(n < numVerts){
                 vertices[n]->SetNormal(t.GetFloat(), t.GetFloat(), t.GetFloat());
-                
+                updatedVertices[n]->SetNormal(vertices[n]->GetNormal());
                 if(DEBUG){
                     Vector3 norm = vertices[n]->GetNormal();
                     printf("\t%f %f %f\n", norm.x, norm.y, norm.z);
@@ -65,22 +70,24 @@ bool Skin::Load(const char* file){
                 printf("skinweights %d\n", numVerts);
             while(n < numVerts){
                 int numAttachments = t.GetInt();
-                std::vector<float> weights = std::vector<float>(numVerts, 0.0);
-                //vertices[n]->SetSkinweights(numAttachments);
+                vertices[n]->numAttachments = numAttachments;
+                updatedVertices[n]->numAttachments = numAttachments;
                 if(DEBUG)
                     printf("\t%d ", numAttachments);
                 int a = 0;
                 while(a < numAttachments){
                     int jointNum = t.GetInt();
-                    //TODO Joint j = Skeleton.Joints(t.getInt());
                     float weight = t.GetFloat();
-                    weights[jointNum] = weight;
+                    vertices[n]->skinweights[a] = weight;
+                    vertices[n]->joints[a] = jointNum;
+                    updatedVertices[n]->skinweights[a] = weight;
+                    updatedVertices[n]->joints[a] = jointNum;
                     a++;
                     
                     if(DEBUG)
                         printf("%d %f ", jointNum, weight);
                 }
-                vertices[n]->SetSkinweights(numAttachments, weights);
+//                vertices[n]->SetSkinweights(numAttachments, weights);
                 if(DEBUG)
                     printf("\n");
                 n++;
@@ -129,15 +136,17 @@ bool Skin::Load(const char* file){
                          ay, by, cy, dy,
                          az, bz, cz, dz);
                 if(DEBUG){
-                            printf("\tmatrix {\n");
-                            printf("\t\t%f %f %f\n", ax, ay, az);
-                            printf("\t\t%f %f %f\n", bx, by, bz);
-                            printf("\t\t%f %f %f\n", cx, cy, cz);
-                            printf("\t\t%f %f %f\n", dx, dy, dz);
-                            printf("\t}\n");
+                    bindings[n]->Print();
+//                            printf("\tmatrix {\n");
+//                            printf("\t\t%f %f %f\n", ax, ay, az);
+//                            printf("\t\t%f %f %f\n", bx, by, bz);
+//                            printf("\t\t%f %f %f\n", cx, cy, cz);
+//                            printf("\t\t%f %f %f\n", dx, dy, dz);
+//                            printf("\t}\n");
                 }
                 n++;
             }
+            InverseBindings();
             break;
         } else {
             t.SkipLine();
@@ -146,46 +155,68 @@ bool Skin::Load(const char* file){
     t.Close();
 }
 
-void Skin::PrintSkin(){
-//    printf("positions %d {\n", numVerts);
-//    for(int n = 0; n < numVerts; n++){
-//        Vector3 pos = vertices[n].GetPosition();
-//        printf("/t%f %f %f\n", pos.x, pos.y, pos.z);
-//    }
-//    printf("}\n");
-//    
-//    printf("normals %d {\n", numVerts);
-//    for(int n = 0; n < numVerts; n++){
-//        Vector3 norm = vertices[n].GetNormal();
-//        printf("/t%f %f %f\n", norm.x, norm.y, norm.z);
-//    }
-//    printf("}\n");
-//    
-//    printf("skinweights %d {\n", numVerts);
-//    for(int n = 0; n < numVerts; n++){
-////        Vector3 norm = vertices[n].GetNormal();
-////        printf("/t%f %f %f", norm.x, norm.y, norm.z);
-//    }
-//    printf("}\n");
-//    
-//    printf("triangles %d {\n", numTriangles);
-//    for(int n = 0; n < numTriangles; n++){
-//        Triangle t = triangles[n];
-//        printf("/t%d %d %d\n", t.GetVertex1(), t.GetVertex2(), t.GetVertex3());
-//    }
-//    
-//    printf("}\n");
-//    
-//    printf("bindings %d {\n", numJoints);
-//    for(int n = 0; n < numJoints; n++){
-//        Matrix34 m = bindings[n];
-//        printf("\tmatrix {\n");
-//        printf("/t%f %f %f\n", m.a.x, m.a.y, m.a.z);
-//        printf("/t%f %f %f\n", m.b.x, m.b.y, m.b.z);
-//        printf("/t%f %f %f\n", m.c.x, m.c.y, m.c.z);
-//        printf("/t%f %f %f\n", m.d.x, m.d.y, m.d.z);
-//        printf("\t}");
-//    }
-//    printf("}");
+void Skin::Update(){
     
+    std::vector<Matrix34 *> skinningMatrices = std::vector<Matrix34 *>(numJoints);
+    std::vector<Joint *> joints = Skel->GetJoints();
+    for(Joint* j : joints){
+
+        int jointNum = j->GetJointNumber();
+        Matrix34 world = j->GetWorldMatrix();
+        Matrix34 binv = *bindings[jointNum];
+        skinningMatrices[jointNum] = new Matrix34();
+        skinningMatrices[jointNum]->Dot(world, binv);
+    }
+
+    
+    for(int c = 0; c < numVerts; c++){
+        Vertex* v = vertices[c];
+        Vector3 vTemp = Vector3();
+        Vector3 nTemp = Vector3();
+        Vector3 vFinal = Vector3();
+        Vector3 nFinal = Vector3();
+        
+        for(int i = 0; i < v->numAttachments; i++){
+            int jointNumber = v->joints[i];
+            float weight = v->skinweights[i];
+            
+            skinningMatrices[jointNumber]->Transform(v->GetPosition(), vTemp);
+            vFinal += weight*vTemp;
+            
+            skinningMatrices[jointNumber]->Transform(v->GetNormal(), nTemp);
+            nFinal += weight*vTemp;
+        }
+        
+        updatedVertices[c]->SetPosition(vFinal);
+        nFinal.Normalize();
+        updatedVertices[c]->SetNormal(nFinal);
+    }
+}
+
+void Skin::Draw(){
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    for(Triangle* t : triangles){
+        glBegin(GL_TRIANGLES);
+        Vertex* v = updatedVertices[t->GetVertex1()];
+        glNormal3f(v->GetNormal().x, v->GetNormal().y, v->GetNormal().z);
+        glVertex3f(v->GetPosition().x, v->GetPosition().y, v->GetPosition().z);
+        
+        v = updatedVertices[t->GetVertex2()];
+        glNormal3f(v->GetNormal().x, v->GetNormal().y, v->GetNormal().z);
+        glVertex3f(v->GetPosition().x, v->GetPosition().y, v->GetPosition().z);
+        
+        v = updatedVertices[t->GetVertex3()];
+        glNormal3f(v->GetNormal().x, v->GetNormal().y, v->GetNormal().z);
+        glVertex3f(v->GetPosition().x, v->GetPosition().y, v->GetPosition().z);
+        glEnd();
+    }
+}
+
+void Skin::InverseBindings(){
+    std::vector<Joint *> joints = Skel->GetJoints();
+    for(Matrix34* m : bindings){
+        m->Inverse();
+        m->Print();
+    }
 }

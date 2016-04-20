@@ -175,32 +175,12 @@ void Joint::AddChild(Joint* j){
     //update siblings?
 }
 
-Matrix34* Joint::MakeLocalMatrix(){
-
-    return new Matrix34();
+Matrix34 Joint::GetLocalMatrix(){
+    return L;
 }
 
-void Joint::ClampValues(){
-    if(RotXLimit.GetValue() > RotXLimit.GetMax()){
-        RotXLimit.SetValue(RotXLimit.GetMax());
-    } else if(RotXLimit.GetValue() < RotXLimit.GetMin()){
-        RotXLimit.SetValue(RotXLimit.GetMin());
-    }
-    
-    if(RotYLimit.GetValue() > RotYLimit.GetMax()){
-        RotYLimit.SetValue(RotYLimit.GetMax());
-    } else if(RotYLimit.GetValue() < RotYLimit.GetMin()){
-        RotYLimit.SetValue(RotYLimit.GetMin());
-    }
-    
-    if(RotZLimit.GetValue() > RotZLimit.GetMax()){
-        RotZLimit.SetValue(RotZLimit.GetMax());
-    } else if(RotZLimit.GetValue() < RotZLimit.GetMin()){
-        RotZLimit.SetValue(RotZLimit.GetMin());
-    }
-    
-    if(DEBUG)
-        printf("Rotation Values: %f, %f, %f\n", RotXLimit.GetValue(), RotYLimit.GetValue(), RotZLimit.GetValue());
+Matrix34 Joint::GetWorldMatrix(){
+    return W;
 }
 
 int Joint::NumberJoints(int n){
@@ -230,6 +210,7 @@ void Joint::Print(){
     for(Joint *j: children)
         j->Print();
 }
+
 
 DOF* Joint::GetCurrentDof(){
     if(currentDof == NULL){
@@ -293,4 +274,27 @@ int Joint::GetJointNumber(){
 
 int Joint::GetCurrentDofNum(){
     return dofNum;
+}
+
+void Joint::ClampValues(){
+    if(RotXLimit.GetValue() > RotXLimit.GetMax()){
+        RotXLimit.SetValue(RotXLimit.GetMax());
+    } else if(RotXLimit.GetValue() < RotXLimit.GetMin()){
+        RotXLimit.SetValue(RotXLimit.GetMin());
+    }
+    
+    if(RotYLimit.GetValue() > RotYLimit.GetMax()){
+        RotYLimit.SetValue(RotYLimit.GetMax());
+    } else if(RotYLimit.GetValue() < RotYLimit.GetMin()){
+        RotYLimit.SetValue(RotYLimit.GetMin());
+    }
+    
+    if(RotZLimit.GetValue() > RotZLimit.GetMax()){
+        RotZLimit.SetValue(RotZLimit.GetMax());
+    } else if(RotZLimit.GetValue() < RotZLimit.GetMin()){
+        RotZLimit.SetValue(RotZLimit.GetMin());
+    }
+    
+    if(DEBUG)
+        printf("Rotation Values: %f, %f, %f\n", RotXLimit.GetValue(), RotYLimit.GetValue(), RotZLimit.GetValue());
 }

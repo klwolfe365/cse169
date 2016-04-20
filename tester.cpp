@@ -73,7 +73,7 @@ Tester::Tester(int argc,char **argv) {
     }
     printf("%s\n",skinFilename);
     Skel.Load(skelFilename);
-    SkelSkin.Load(skinFilename);
+    SkelSkin.Load(skinFilename, &Skel);
     //SkelSkin.PrintSkin();
     
     Skel.PrintJoints();
@@ -95,6 +95,7 @@ void Tester::Update() {
 	//Cube.Update();
     Matrix34 identity = Matrix34();
     Skel.Update(identity);
+    SkelSkin.Update();
 
 	// Tell glut to re-display the scene
 	glutSetWindow(WindowHandle);
@@ -123,6 +124,7 @@ void Tester::Draw() {
 	Cam.Draw();		// Sets up projection & viewing matrices
 //	Cube.Draw();
     Skel.Draw();
+    SkelSkin.Draw();
 
 	// Finish drawing scene
 	glFinish();

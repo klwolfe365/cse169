@@ -40,7 +40,14 @@ void Skeleton::Reset(){
 }
 
 void Skeleton::NumberJoints(){
-    totalJointNum = Root->NumberJoints(0);
+    totalJointNum = Root->NumberJoints(0) + 1;
+    joints = std::vector<Joint *>(totalJointNum);
+    
+    int n = 0;
+    while(n < totalJointNum){
+        joints[n] = GetJoint(n);
+        n++;
+    }
 }
 
 void Skeleton::PrintJoints(){
@@ -75,4 +82,8 @@ Joint* Skeleton::GetPrevJoint(){
        
     currentJoint = GetJoint(currentJointNum);
     return currentJoint;
+}
+
+std::vector<Joint *> Skeleton::GetJoints(){
+    return joints;
 }

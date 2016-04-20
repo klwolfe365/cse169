@@ -10,9 +10,9 @@
 #define Skeleton_h
 
 #include <stdio.h>
+#include <vector>
 #include "matrix34.h"
 #include "Joint.h"
-#include "Skin.h"
 class Skeleton {
 public:
     static const bool DEBUG = true;
@@ -31,16 +31,20 @@ public:
     Joint* GetCurrentJoint();
     Joint* GetNextJoint();
     Joint* GetPrevJoint();
+    const char* GetFileName() {return filename;}
+    
+    std::vector<Joint *> GetJoints();
     
 private:
     Joint* Root;
-    Skin* skin;
     const char *filename;
     
     
     Joint* currentJoint = NULL;
     int currentJointNum;
     int totalJointNum;
+    
+    std::vector<Joint *> joints;
 };
 
 #endif /* Skeleton_h */
