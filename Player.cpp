@@ -8,24 +8,38 @@
 
 #include "Player.h"
 
+Player::Player(){}
+
+Player::~Player(){}
+
 void Player::Update(){
-    time += 1; //Increment time
-    //Evaluate animation
     
-    //Pose skeleton
-    //first 3 translate root
-    //joint num = current num - 3
-        //current joint DOF = current num mod 3
-            // = 1: x dof rotate
-            // = 2: y dof rotate
-            // = 0: z dof rotate
-    
+    if(time < anim->GetTimeEnd())
+        time += 0.01;
     std::vector<Channel *> channels = anim->GetChannels();
-    for(int i = 3; i < channels.size()/3; i+=3){
-        int jointNum = i - 3;
+    
+    Joint * curr = skel->GetJoint(0);
+    
+    float xTranslate = channels[0]->Evaluate(time);
+    float yTranslate = channels[1]->Evaluate(time);
+    float zTranslate = channels[2]->Evaluate(time);
+    
+    curr->SetOffset(xTranslate, yTranslate, zTranslate);
+    
+    for(int i = 3; i < channels.size(); i+=3){
+        int jointNum = floor((i-1)/3);
+        Channel * rotX = channels[i];
+        Channel * rotY = channels[i+1];
+        Channel * rotZ = channels[i+2];
+        
+        float x = rotX->Evaluate(time);
+        float y = rotY->Evaluate(time);
+        float z = rotZ->Evaluate(time);
+        
+        curr = skel->GetJoint(jointNum);
+        curr->GetDof(0)->SetValue(x);
+        curr->GetDof(1)->SetValue(y);
+        curr->GetDof(2)->SetValue(z);
         
     }
-    // 1 2 3
-    // 4 5 6
-    // x y z
 }

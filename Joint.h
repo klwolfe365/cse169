@@ -40,12 +40,19 @@ public:
     DOF* GetCurrentDof();
     DOF* GetNextDof();
     DOF* GetPrevDof();
+    DOF* GetDof(int dofNum);
     const char* GetName();
     int GetJointNumber();
     int GetCurrentDofNum();
     
+    
+    void SetOffset(float x, float y, float z) {Offset.x = x; Offset.y = y; Offset.z = z;}
     void SetColor(float r, float g, float b) {color.x = r; color.y = g; color.z = b;}
+    
     void SetDOFColor();
+    
+    Vector3 GetOffset()         {return Offset;}
+    Vector3 GetRotation()       {return Vector3(RotXLimit.GetValue(), RotYLimit.GetValue(), RotZLimit.GetValue());}
     
 private:
     Vector3 Offset;

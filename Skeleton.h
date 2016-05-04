@@ -15,7 +15,7 @@
 #include "Joint.h"
 class Skeleton {
 public:
-    static const bool DEBUG = true;
+    static const bool DEBUG = false;
 
     Skeleton();
     ~Skeleton();

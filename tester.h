@@ -12,6 +12,7 @@
 #include "Skin.h"
 #include "Animation.h"
 #include "Rig.h"
+#include "Player.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +24,8 @@ public:
 	void Update();
 	void Reset();
 	void Draw();
+    
+    void Animate();
 
 	void Quit();
 
@@ -47,6 +50,7 @@ private:
     Skeleton Skel;
     Skin SkelSkin;
     Animation Anim;
+    Player AnimPlayer;
     Rig rig;
 };
 

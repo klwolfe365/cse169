@@ -38,6 +38,7 @@ bool Animation::Load(const char *file){
             c->Load(token);
             channels.push_back(c);
             if(DEBUG){
+                c = channels.back();
                 printf("Channel #%lu- Extrapolation In/Out: %s/%s\tNumKeys: %d\n", channels.size(), c->GetExtrapIn(), c->GetExtrapOut(), c->GetNumKeys());
                 std::vector<Keyframe *> keys = c->GetKeys();
                 for(Keyframe * k : keys)

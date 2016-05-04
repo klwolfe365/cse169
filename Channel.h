@@ -18,7 +18,7 @@
 
 class Channel {
 public:
-    static const bool DEBUG = true;
+    static const bool DEBUG = false;
     Channel();
     ~Channel();
     

@@ -113,19 +113,6 @@ void Joint::Initialize(){
     RotZLimit.SetValue(Pose.z);
     ClampValues();
     
-    //    Matrix34 rotations = Matrix34();
-    //    rotations.Identity();
-    //    //Initialize any rotations
-    //    rotations.MakeRotateX(RotXLimit.GetValue());
-    //    L.Dot(rotations, L);
-    //    rotations.MakeRotateY(RotYLimit.GetValue());
-    //    L.Dot(rotations, L);
-    //    rotations.MakeRotateZ(RotZLimit.GetValue());
-    //    L.Dot(rotations, L);
-    //    //Initialize any translations
-    //    rotations.MakeTranslate(Offset);
-    //    L.Dot(rotations, L);
-    
     for(Joint *j : children){
         j->Initialize();
     }
@@ -216,10 +203,6 @@ void Joint::Print(){
 
 DOF* Joint::GetCurrentDof(){
     if(currentDof == NULL){
-    //        printf("dofs size: %d", dofs.size());
-    //        dofNum = dofs.begin();
-    //        currentDof = *dofNum;
-//        currentDof = &RotXLimit;
         currentDof = dofs[0];
     }
     return currentDof;
@@ -253,11 +236,6 @@ DOF* Joint::GetNextDof(){
     }
     
     return currentDof;
-    //    if(dofNum != dofs.end())
-    //        ++dofNum;
-    //    else
-    //        dofNum = dofs.begin();
-    //    return *dofNum;
 }
 
 DOF* Joint::GetPrevDof(){
@@ -285,16 +263,12 @@ DOF* Joint::GetPrevDof(){
     }
     
     return currentDof;
-    //    if(dofNum != dofs.end())
-    //        ++dofNum;
-    //    else
-    //        dofNum = dofs.begin();
-    //    return *dofNum;
-    //    if(dofNum != dofs.begin())
-    //        --dofNum;
-    //    else
-    //        dofNum = dofs.end();
-    //    return *dofNum;
+}
+
+DOF* Joint::GetDof(int dofNum){
+    if(dofNum < 0 || dofNum > dofs.size())
+        return NULL;
+    return dofs[dofNum];
 }
 
 const char* Joint::GetName(){
@@ -337,19 +311,16 @@ void Joint::SetDOFColor(){
         color.x = 1.0;
         color.y = 0.0;
         color.z = 0.0;
-//        color = Vector3(1.0, 0.0, 0.0);
     }
     else if(dofNum == 1){
         color.x = 0.0;
         color.y = 1.0;
         color.z = 0.0;
-//        color = Vector3(0.0, 1.0, 0.0);
     }
     else{
         color.x = 0.0;
         color.y = 0.0;
         color.z = 1.0;
-//        color = Vector3(0.0, 0.0, 1.0);
     }
 }
 

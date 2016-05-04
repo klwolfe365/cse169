@@ -27,8 +27,19 @@ float setTangents(const char* tangentType){
 //        return 
 }
 
-void Keyframe::setCoefficients(){
+void Keyframe::SetCoefficients(Keyframe* k0, Keyframe* k1){
+    float t0 = k0->getTime();
+    float t1 = k1->getTime();
+    float t = t1-t0;
+    float p0 = k0->getValue();
+    float p1 = k1->getValue();
+    float v0 = k0->getTanOut();
+    float v1 = k1->getTanIn();
     
+    a = (2*p0) - (2*p1) + (t*v0) + (t*v1);
+    b = (-3*p0) + (3*p1) + (-2*(t*v0)) - (t*v1);
+    c = t*v0;
+    d = p0;
 }
 
 float Keyframe::CalculateTangent(Keyframe * prev, Keyframe * next){

@@ -32,14 +32,15 @@ public:
     void setTanModeOut(const char * t) { tanModeOut = t; }
     const char * getTanModeOut()         { return tanModeOut; }
     
-    void setCoefficients();
+//    void setCoefficients();
     float CalculateTangent(Keyframe* prev, Keyframe* next);
+    void SetCoefficients(Keyframe * k0, Keyframe * k1);
     
+    float a,b,c,d;
 private:
     float time, value, tangentIn, tangentOut;
     const char * tanModeIn;
     const char * tanModeOut;
-    float a,b,c,d;
     
     bool isValidTangent(const char* s);
     bool isFloat(const char* s);

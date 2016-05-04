@@ -74,11 +74,6 @@ void Channel::SetTangentValues(){
         curr->setTanOut(0.0f);
     else if((strcmp(curr->getTanModeOut(), "linear") == 0) || strcmp(curr->getTanModeOut(), "smooth") == 0){
         float t = curr->CalculateTangent(curr, keys[1]);
-//        float p0 = curr->getValue();
-//        float p1 = keys[1]->getValue();
-//        float t0 = curr->getTime();
-//        float t1 = keys[1]->getTime();
-        
         curr->setTanOut(t);
     }
     else {
@@ -92,21 +87,11 @@ void Channel::SetTangentValues(){
             curr->setTanIn(0.0f);
         } else if(strcmp(curr->getTanModeIn(), "linear") == 0){
             float t = curr->CalculateTangent(keys[i-1], curr);
-//            float p0 = keys[i-1]->getValue();
-//            float t0 = keys[i-1]->getTime();
-//            float p1 = curr->getValue();
-//            float t1 = curr->getTime();
-//            float t = (p1-p0)/(t1-t0);
             curr->setTanIn(t);
         } else if(strcmp(curr->getTanModeIn(), "smooth") == 0){
             float t = curr->CalculateTangent(keys[i-1], keys[i+1]);
-//            float p0 = keys[i-1]->getValue();
-//            float t0 = keys[i-1]->getTime();
-//            float p2 = keys[i+1]->getValue();
-//            float t2 = keys[i+1]->getTime();
-//            float t = (p2-p0)/(t2-t0);
             curr->setTanIn(t);
-            curr->setTanOut(t);
+//            curr->setTanOut(t);
         } else {
             curr->setTanIn(strtof(curr->getTanModeIn(), '\0'));
         }
@@ -116,11 +101,6 @@ void Channel::SetTangentValues(){
             curr->setTanOut(0.0f);
         } else if(strcmp(curr->getTanModeOut(), "linear") == 0){
             float t = curr->CalculateTangent(curr, keys[i+1]);
-//            float p0 = curr->getValue();
-//            float t0 = curr->getTime();
-//            float p1 = keys[i+1]->getValue();
-//            float t1 = keys[i+1]->getTime();
-//            float t = (p1-p0)/(t1-t0);
             curr->setTanOut(t);
         } else if(strcmp(curr->getTanModeOut(), "smooth") == 0){
             float t = curr->CalculateTangent(keys[i-1], keys[i+1]);
@@ -136,11 +116,6 @@ void Channel::SetTangentValues(){
         curr->setTanIn(0.0f);
     else if((strcmp(curr->getTanModeIn(), "linear") == 0) || strcmp(curr->getTanModeIn(), "smooth") == 0){
         float t = curr->CalculateTangent(keys[numKeys-2], curr);
-//        float p1 = curr->getValue();
-//        float p0 = keys[numKeys-2]->getValue();
-//        float t1 = curr->getTime();
-//        float t0 = keys[numKeys-2]->getTime();
-        
         curr->setTanIn(t);
     }
     else {
@@ -163,19 +138,19 @@ float Channel::Evaluate(float t){
         if(t == curr->getTime())
             return curr->getValue();
         else if(t < curr->getTime()){
-            Span * s = spans[i-1];
-            float a = s->a;
-            float b = s->b;
-            float c = s->c;
-            float d = s->d;
-            float t0 = s->k0->getTime();
-            float t1 = s->k1->getTime();
+//            Span * s = spans[i-1];
+            float a = curr->a;
+            float b = curr->b;
+            float c = curr->c;
+            float d = curr->d;
+            float t0 = keys[i-1]->getTime();
+            float t1 = curr->getTime();
             float u = (t - t0)/(t1 - t0);
             
-            return d + u*(c + u*(b + u*(a)));
+            return d + (u*(c + (u*(b + (u*a)))));
         }
     }
-    return 0.0f;
+    return Extrapolate(t);
 }
 
 
@@ -183,12 +158,8 @@ void Channel::SetCoefficients(){
     if(keys.size() < 2)
         return;
     
-    for(int i = 0; i < keys.size()-1; i++){
-        Span * s = new Span();
-        s->k0 = keys[i];
-        s->k1 = keys[i+1];
-        s->setCoefficients();
-        spans.push_back(s);
+    for(int i = 1; i < keys.size(); i++){
+        keys[i]->SetCoefficients(keys[i-1], keys[i]);
     }
     
 }
@@ -199,31 +170,43 @@ void Channel::SetCoefficients(){
   */
 float Channel::Extrapolate(float t){
     if(t < keys.front()->getTime()){
-        if(strcmp(extrapIn, "flat") == 0)
+        
+        if(strcmp(extrapIn, "constant") == 0)
             return keys.front()->getValue();
+        
         if(strcmp(extrapIn, "linear") == 0)
             return doLinearExtrapolation(t);
-        if(strcmp(extrapIn, "cyclic") == 0)
+        
+        if(strcmp(extrapIn, "cycle") == 0)
             return doCyclicExtrapolation(t);
-        if(strcmp(extrapIn, "cyclic_offset") == 0)
+        
+        if(strcmp(extrapIn, "cycle_offset") == 0)
             return doCyclicOffsetExtrapolation(t);
+        
         if(strcmp(extrapIn, "bounce") == 0)
             return doBounceExtrapolation(t);
     }
+    
     if( t > keys.back()->getTime()){
-        if(strcmp(extrapOut, "flat") == 0)
+        
+        if(strcmp(extrapOut, "constant") == 0)
             return keys.back()->getValue();
+        
         if(strcmp(extrapOut, "linear") == 0)
             return doLinearExtrapolation(t);
-        if(strcmp(extrapOut, "cyclic") == 0)
+        
+        if(strcmp(extrapOut, "cycle") == 0)
             return doCyclicExtrapolation(t);
-        if(strcmp(extrapOut, "cyclic_offset") == 0)
+        
+        if(strcmp(extrapOut, "cycle_offset") == 0)
             return doCyclicOffsetExtrapolation(t);
+        
         if(strcmp(extrapOut, "bounce") == 0)
             return doBounceExtrapolation(t);
+        
     }
-    
-    return 0.0f;
+    printf("----- EXTRAPOLATION ERROR! -----`");
+    return keys.back()->getValue();
 }
 
 
@@ -235,14 +218,17 @@ float Channel::doLinearExtrapolation(float time){
         float p1 = keys.front()->getValue();
         float t1 = keys.front()->getTime();
         float t0 = time;
-        float v1In = keys.front()->getTanOut();
-        return p1 - (v1In * (t1 - t0));
+        float tangent = keys.front()->getTanOut();
+        return p1 - (tangent*(t1-t0));
+//        return p1 - (v1In * (t1 - t0));
     } else {
         float p0 = keys.back()->getValue();
         float t0 = keys.back()->getTime();
         float t1 = time;
-        float v0Out = keys.back()->getTanIn();
-        return v0Out * (t1 - t0) + p0;
+        float tangent = keys.back()->getTanIn();
+        return (tangent*(t1-t0))+p0;
+
+//        return v0Out * (t1 - t0) + p0;
     }
 }
 
@@ -254,7 +240,7 @@ float Channel::doLinearExtrapolation(float time){
 float Channel::doCyclicExtrapolation(float time) {
     float tMin = keys.front()->getTime();
     float tMax = keys.back()->getTime();
-    float cIndex = floor((time - tMin)/(tMax - tMin));
+    int cIndex = floor((time - tMin)/(tMax - tMin));
     
     float start = cIndex*(tMax-tMin)+tMin;
     float tPrime = time - start + tMin;
@@ -269,7 +255,7 @@ float Channel::doCyclicExtrapolation(float time) {
 float Channel::doCyclicOffsetExtrapolation(float time) {
     float tMin = keys.front()->getTime();
     float tMax = keys.back()->getTime();
-    float cIndex = floor((time - tMin)/(tMax - tMin));
+    int cIndex = floor((time - tMin)/(tMax - tMin));
     
     float start = cIndex*(tMax-tMin)+tMin;
     float tPrime = time - start + tMin;
@@ -279,5 +265,16 @@ float Channel::doCyclicOffsetExtrapolation(float time) {
 
 /*TODO*/
 float Channel::doBounceExtrapolation(float time){
-    return 0.0f;
+    float tMin = keys.front()->getTime();
+    float tMax = keys.back()->getTime();
+    int cIndex = floor((time - tMin)/(tMax - tMin));
+    
+    float start = cIndex*(tMax-tMin)+tMin;
+    float tPrime = time - start + tMin;
+    if(cIndex % 2 == 0)
+        return Evaluate(tPrime);
+    else
+        return Evaluate(tMax - tPrime);
 }
+
+//float Channel::EvaluateCoefficients(Keyframe* k0, Keyframe* k1){}

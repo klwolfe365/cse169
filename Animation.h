@@ -26,6 +26,9 @@ public:
     void Draw();
     
     std::vector<Channel *> GetChannels()        { return channels; }
+    
+    float GetTimeStart()                        { return timeStart; }
+    float GetTimeEnd()                          { return timeEnd; }
 
 private:
     const char * filename;

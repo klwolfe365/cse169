@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 // These are really HACKS to make glut call member functions instead of static functions
 static void display()									{TESTER->Draw();}
 static void idle()										{TESTER->Update();}
+static void animate(int v)                              {TESTER->Animate();}
 static void resize(int x,int y)							{TESTER->Resize(x,y);}
 static void keyboard(unsigned char key,int x,int y)		{TESTER->Keyboard(key,x,y);}
 static void mousebutton(int btn,int state,int x,int y)	{TESTER->MouseButton(btn,state,x,y);}
@@ -75,15 +76,19 @@ Tester::Tester(int argc,char **argv) {
     if(argv[3])
         animFilename = argv[3];
     printf("%s\n",skinFilename);
-    rig.skel = Skel;
-    rig.skin = SkelSkin;
     Skel.Load(skelFilename);
     SkelSkin.Load(skinFilename, &Skel);
-    if(argv[3])
-    Anim.Load(animFilename);
+    
+    if(argv[3]){
+        Anim.Load(animFilename);
+        AnimPlayer.SetTime(Anim.GetTimeStart());
+        AnimPlayer.SetSkeleton(&Skel);
+        AnimPlayer.SetSkin(&SkelSkin);
+        AnimPlayer.SetAnimation(&Anim);
+    }
     //SkelSkin.PrintSkin();
     
-    Skel.PrintJoints();
+//    Skel.PrintJoints();
     
     /***** LIGHTING *****/
     GLfloat light_position0[] = { 10.0, 5.0, 1.0, 0.0 };
@@ -113,6 +118,8 @@ Tester::Tester(int argc,char **argv) {
     glEnable(GL_LIGHT1);
     glEnable(GL_DEPTH_TEST);
     
+    
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,12 +136,19 @@ void Tester::Update() {
 	Cam.Update();
 	//Cube.Update();
     Matrix34 identity = Matrix34();
-//    Skel.Update(identity);
-//    SkelSkin.Update();
+    Skel.Update(identity);
+    SkelSkin.Update();
+    AnimPlayer.Update();
 
 	// Tell glut to re-display the scene
 	glutSetWindow(WindowHandle);
 	glutPostRedisplay();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void Tester::Animate(){
+    AnimPlayer.Update();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,8 +172,8 @@ void Tester::Draw() {
 	// Draw components
 	Cam.Draw();		// Sets up projection & viewing matrices
 //	Cube.Draw();
-//    Skel.Draw();
-//    SkelSkin.Draw();
+    Skel.Draw();
+    SkelSkin.Draw();
 
 	// Finish drawing scene
 	glFinish();
@@ -212,7 +226,11 @@ void Tester::Keyboard(int key,int x,int y) {
             Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
             break;
         }
-	}
+        case 'p':{
+            Skel.GetPrevJoint();
+            break;
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
