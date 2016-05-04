@@ -22,6 +22,9 @@ Joint::Joint(){
     num = -1;
     color = Vector3(1.0,1.0,1.0);
     dofNum = 0;
+    dofs.push_back(&RotXLimit);
+    dofs.push_back(&RotYLimit);
+    dofs.push_back(&RotZLimit);
 }
 
 bool Joint::Load(Tokenizer &t){
@@ -64,7 +67,6 @@ bool Joint::Load(Tokenizer &t){
             if(DEBUG){
                 printf("RotXLimit: %f %f\n", RotXLimit.GetMin(), RotXLimit.GetMax());
             }
-            dofs.push_back(&RotXLimit);
         }
         else if(strcmp(temp, "rotylimit")==0){
             RotYLimit.SetMin(t.GetFloat());
@@ -72,7 +74,6 @@ bool Joint::Load(Tokenizer &t){
             if(DEBUG){
                 printf("RotXLimit: %f %f\n", RotYLimit.GetMin(), RotYLimit.GetMax());
             }
-            dofs.push_back(&RotYLimit);
         }
         else if(strcmp(temp, "rotzlimit")==0){
             RotZLimit.SetMin(t.GetFloat());
@@ -80,7 +81,6 @@ bool Joint::Load(Tokenizer &t){
             if(DEBUG){
                 printf("RotZLimit: %f %f\n", RotZLimit.GetMin(), RotZLimit.GetMax());
             }
-            dofs.push_back(&RotZLimit);
         }
         else if(strcmp(temp, "pose")==0){
             Pose.x = t.GetFloat();
@@ -219,7 +219,8 @@ DOF* Joint::GetCurrentDof(){
     //        printf("dofs size: %d", dofs.size());
     //        dofNum = dofs.begin();
     //        currentDof = *dofNum;
-        currentDof = &RotXLimit;
+//        currentDof = &RotXLimit;
+        currentDof = dofs[0];
     }
     return currentDof;
     
@@ -228,22 +229,23 @@ DOF* Joint::GetCurrentDof(){
 DOF* Joint::GetNextDof(){
     
     dofNum = (++dofNum)%3;
+    currentDof = dofs[dofNum];
     if(dofNum == 0){
-        currentDof = &RotXLimit;
+//        currentDof = &RotXLimit;
         color.x = 1.0;
         color.y = 0.0;
         color.z = 0.0;
 //        color = Vector3(1.0, 0.0, 0.0);
     }
     else if(dofNum == 1){
-        currentDof = &RotYLimit;
+//        currentDof = &RotYLimit;
         color.x = 0.0;
         color.y = 1.0;
         color.z = 0.0;
 //        color = Vector3(0.0, 1.0, 0.0);
     }
     else{
-        currentDof = &RotZLimit;
+//        currentDof = &RotZLimit;
         color.x = 0.0;
         color.y = 0.0;
         color.z = 1.0;
@@ -262,20 +264,21 @@ DOF* Joint::GetPrevDof(){
     dofNum = (--dofNum)%3;
     if(dofNum < 0)
         dofNum = 2;
+    currentDof = dofs[dofNum];
     if(dofNum == 0){
-        currentDof = &RotXLimit;
+//        currentDof = &RotXLimit;
         color.x = 1.0;
         color.y = 0.0;
         color.z = 0.0;
     }
     else if(dofNum == 1){
-        currentDof = &RotYLimit;
+//        currentDof = &RotYLimit;
         color.x = 0.0;
         color.y = 1.0;
         color.z = 0.0;
     }
     else{
-        currentDof = &RotZLimit;
+//        currentDof = &RotZLimit;
         color.x = 0.0;
         color.y = 0.0;
         color.z = 1.0;

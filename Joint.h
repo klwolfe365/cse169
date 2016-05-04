@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include <list>
+#include <vector>
+
 #include "matrix34.h"
 #include "vector3.h"
 #include "token.h"
@@ -56,7 +58,7 @@ private:
     
     Matrix34 W;
     Matrix34 L;
-    std::list<DOF *> dofs;
+    std::vector<DOF *> dofs;
     Joint *parent;
     std::list<Joint *> children;
     

@@ -63,6 +63,7 @@ Tester::Tester(int argc,char **argv) {
     
     const char * skelFilename;
     const char * skinFilename;
+    const char * animFilename;
     if(argv[1] && argv[2]){
         skelFilename = argv[1];
         skinFilename = argv[2];
@@ -71,18 +72,24 @@ Tester::Tester(int argc,char **argv) {
         skelFilename = "/Users/karen/cse169/skeletons/wasp.skel";
         skinFilename = "/Users/karen/cse169/skins/wasp.skin";
     }
+    if(argv[3])
+        animFilename = argv[3];
     printf("%s\n",skinFilename);
+    rig.skel = Skel;
+    rig.skin = SkelSkin;
     Skel.Load(skelFilename);
     SkelSkin.Load(skinFilename, &Skel);
+    if(argv[3])
+    Anim.Load(animFilename);
     //SkelSkin.PrintSkin();
     
     Skel.PrintJoints();
     
     /***** LIGHTING *****/
-    GLfloat light_position0[] = { 1.0, 5.0, 1.0, 0.0 };
-    GLfloat spot_direction0[] = { -1.0, -5.0, 0.0 };
-    GLfloat light_position1[] = { 1.0, -5.0, -1.0, 0.0 };
-    GLfloat spot_direction1[] = { -1.0, 5.0, 0.0 };
+    GLfloat light_position0[] = { 10.0, 5.0, 1.0, 0.0 };
+    GLfloat spot_direction0[] = { -10.0, -5.0, 0.0 };
+    GLfloat light_position1[] = { -10.0, -5.0, -1.0, 0.0 };
+    GLfloat spot_direction1[] = { 10.0, 5.0, 0.0 };
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glShadeModel (GL_SMOOTH);
     
@@ -122,8 +129,8 @@ void Tester::Update() {
 	Cam.Update();
 	//Cube.Update();
     Matrix34 identity = Matrix34();
-    Skel.Update(identity);
-    SkelSkin.Update();
+//    Skel.Update(identity);
+//    SkelSkin.Update();
 
 	// Tell glut to re-display the scene
 	glutSetWindow(WindowHandle);
@@ -137,7 +144,7 @@ void Tester::Reset() {
 	Cam.SetAspect(float(WinX)/float(WinY));
 
 	//Cube.Reset();
-    Skel.Reset();
+//    Skel.Reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,8 +158,8 @@ void Tester::Draw() {
 	// Draw components
 	Cam.Draw();		// Sets up projection & viewing matrices
 //	Cube.Draw();
-    Skel.Draw();
-    SkelSkin.Draw();
+//    Skel.Draw();
+//    SkelSkin.Draw();
 
 	// Finish drawing scene
 	glFinish();
@@ -198,18 +205,11 @@ void Tester::Keyboard(int key,int x,int y) {
             Skel.GetCurrentJoint()->GetPrevDof();
             break;
         case '<':{
-            DOF* dof = Skel.GetCurrentJoint()->GetCurrentDof();
-            printf("JOINT(%s) Current dof %d (%f, %f): value %f\n", Skel.GetCurrentJoint()->GetName(), Skel.GetCurrentJoint()->GetCurrentDofNum(), dof->GetMin(), dof->GetMax(), dof->GetValue());
             Skel.GetCurrentJoint()->GetCurrentDof()->Decrement();
-            printf("New value: %f\n", dof->GetValue());
             break;
         }
         case '>':{
-            DOF* dof = Skel.GetCurrentJoint()->GetCurrentDof();
-            printf("JOINT(%s) Current dof %d (%f, %f): value %f\n", Skel.GetCurrentJoint()->GetName(), Skel.GetCurrentJoint()->GetCurrentDofNum(), dof->GetMin(), dof->GetMax(), dof->GetValue());
             Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
-            
-            printf("New value: %f\n", dof->GetValue());
             break;
         }
 	}

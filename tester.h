@@ -10,6 +10,8 @@
 #include "cube.h"
 #include "Skeleton.h"
 #include "Skin.h"
+#include "Animation.h"
+#include "Rig.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +46,8 @@ private:
 	//SpinningCube Cube;
     Skeleton Skel;
     Skin SkelSkin;
+    Animation Anim;
+    Rig rig;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
