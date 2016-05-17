@@ -14,8 +14,11 @@ Player::~Player(){}
 
 void Player::Update(){
     
-    if(time < anim->GetTimeEnd())
-        time += 0.01;
+//    if(time < anim->GetTimeEnd())
+        time += 0.033;
+//    else
+//        time = anim->GetTimeStart();
+    
     std::vector<Channel *> channels = anim->GetChannels();
     
     Joint * curr = skel->GetJoint(0);

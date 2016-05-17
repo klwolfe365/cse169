@@ -14,7 +14,6 @@
 
 #include "token.h"
 #include "Keyframe.h"
-#include "Span.h"
 
 class Channel {
 public:
@@ -36,7 +35,6 @@ private:
     const char * extrapOut;
     int numKeys;
     std::vector<Keyframe *> keys;
-    std::vector<Span *> spans;
     
     void SetTangentValues();
     
