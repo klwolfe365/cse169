@@ -48,3 +48,10 @@ void Particle::UpdatePosition(Vector3 pos){
     Position.y += pos.y;
     Position.z += pos.z;
 }
+
+void Particle::Print(){
+    printf("Position %f %f %f\n", Position.x, Position.y, Position.z);
+    printf("\t\tVelocity %f %f %f\n", Velocity.x, Velocity.y, Velocity.z);
+    printf("\t\tForce %f %f %f\n", Force.x, Force.y, Force.z);
+    printf("\t\tMass: %f\tFixed: %s\n", mass, fixed ? "true":"false");
+}

@@ -13,6 +13,7 @@
 #include "Animation.h"
 #include "Rig.h"
 #include "Player.h"
+#include "Cloth.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -52,6 +53,8 @@ private:
     Animation Anim;
     Player AnimPlayer;
     Rig rig;
+    Cloth cloth;
+    Vector3 airVelocity;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

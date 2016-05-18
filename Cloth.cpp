@@ -20,7 +20,6 @@ Cloth::Cloth(int w, int h){
     initializeSprings();
     setFixedRow(0);
     Color = Vector3(0.0, 1.0, 1.0);
-
     
     //TODO init cloth/spring/triangle arrays
 }
@@ -30,9 +29,14 @@ void Cloth::initializeCloth(){
     for(int r = 0; r < height; r++){
         for(int c = 0; c < width; c++){
             Particle * p = new Particle();
-            p->setPosition(Vector3(c, 0-r, 0.0));
-            Particles[r][c] = new Particle();
+            p->setPosition(Vector3(c*0.5, (0-r)*0.5, 0.0));
+//            p->Print();
+            Particles[r][c] = p;
         }
+    }
+//    
+    if(DEBUG){
+        PrintParticles();
     }
 }
 
@@ -49,6 +53,17 @@ void Cloth::initializeTriangles(){
             t2->SetParticles(p1, p2, p3);
             triangles.push_back(t1);
             triangles.push_back(t2);
+        }
+    }
+    
+    if(DEBUG){
+        for(int i = 0; i < triangles.size(); i++){
+            printf("Triangle %d: ", i);
+            triangles[i]->GetParticle1()->Print();
+            printf("\t");
+            triangles[i]->GetParticle2()->Print();
+            printf("\t");
+            triangles[i]->GetParticle3()->Print();
         }
     }
 }
@@ -119,13 +134,21 @@ void Cloth::Update(Vector3 vAir){
             Particles[r][c]->ApplyForce(f);
         }
     }
+    
+    //Integrate over particles
+    for(int r = 0; r < height; r++) {
+        for (int c = 0; c < width; c++) {
+            Particles[r][c]->Update(0.005);
+        }
+    }
 }
 
 void Cloth::Draw(){
     glPushMatrix();
     glBegin(GL_TRIANGLES);
-    GLfloat c[] = {Color.x, Color.y, Color.z, 1.0};
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, c);
+    glColor3f(Color.x, Color.y, Color.z);
+//    GLfloat c[] = {Color.x, Color.y, Color.z, 1.0};
+//    glMaterialfv(GL_FRONT, GL_DIFFUSE, c);
     for(int i = 0; i < triangles.size(); i++){
         Vector3 p0 = triangles[i]->GetParticle(0)->getPosition();
         Vector3 p1 = triangles[i]->GetParticle(1)->getPosition();
@@ -147,4 +170,13 @@ void Cloth::setColor(float r, float g, float b){
     Color.x = r;
     Color.y = g;
     Color.z = b;
+}
+
+void Cloth::PrintParticles(){
+    for(int r = 0; r < height; r ++){
+        for(int c = 0; c < width; c++){
+            printf("(%d, %d): ", r, c);
+            Particles[r][c]->Print();
+        }
+    }
 }

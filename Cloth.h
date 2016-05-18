@@ -16,6 +16,7 @@
 #include "SpringDamper.h"
 class Cloth{
 public:
+    static const bool DEBUG = true;
     Cloth();
     Cloth(int w, int h);
     ~Cloth();
@@ -34,6 +35,8 @@ public:
     void setWidth(int w)            { width = w; }
     void setHeight(int h)           { height = h; }
     void setColor(float r, float g, float b);
+    
+    void PrintParticles();
     
 private:
     int width, height;

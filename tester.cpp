@@ -62,34 +62,42 @@ Tester::Tester(int argc,char **argv) {
 
 	Cam.SetAspect(float(WinX)/float(WinY));
     
-    const char * skelFilename;
-    const char * skinFilename;
-    const char * animFilename;
-    if(argv[1] && argv[2]){
-        skelFilename = argv[1];
-        skinFilename = argv[2];
-    }
-    else{
-        skelFilename = "/Users/karen/cse169/skeletons/wasp.skel";
-        skinFilename = "/Users/karen/cse169/skins/wasp.skin";
-    }
-    if(argv[3])
-        animFilename = argv[3];
-    printf("%s\n",skinFilename);
-    Skel.Load(skelFilename);
-    SkelSkin.Load(skinFilename, &Skel);
+//    if(ANIM_MODE)
+//        const char * skelFilename;
+//        const char * skinFilename;
+//        const char * animFilename;
+//        if(argv[1] && argv[2]){
+//            skelFilename = argv[1];
+//            skinFilename = argv[2];
+//        }
+//        else{
+//            skelFilename = "/Users/karen/cse169/skeletons/wasp.skel";
+//            skinFilename = "/Users/karen/cse169/skins/wasp.skin";
+//        }
+//        if(argv[3])
+//            animFilename = argv[3];
+//        printf("%s\n",skinFilename);
+//        Skel.Load(skelFilename);
+//        SkelSkin.Load(skinFilename, &Skel);
+//        
+//        if(argv[3]){
+//            Anim.Load(animFilename);
+//            AnimPlayer.SetTime(Anim.GetTimeStart());
+//            AnimPlayer.SetSkeleton(&Skel);
+//            AnimPlayer.SetSkin(&SkelSkin);
+//            AnimPlayer.SetAnimation(&Anim);
+//            glutTimerFunc(33, animate, 0);
+//        }
     
-    if(argv[3]){
-        Anim.Load(animFilename);
-        AnimPlayer.SetTime(Anim.GetTimeStart());
-        AnimPlayer.SetSkeleton(&Skel);
-        AnimPlayer.SetSkin(&SkelSkin);
-        AnimPlayer.SetAnimation(&Anim);
-        glutTimerFunc(33, animate, 0);
-    }
+//    else if(CLOTH_MODE)
     //SkelSkin.PrintSkin();
     
 //    Skel.PrintJoints();
+    
+    cloth = Cloth(4, 4);
+//    cloth.PrintParticles();
+    airVelocity.Zero();
+    
     
     /***** LIGHTING *****/
     GLfloat light_position0[] = { 6.0, 2.0, 2.0, 0.0 };
@@ -145,10 +153,10 @@ void Tester::Update() {
 	Cam.Update();
 	//Cube.Update();
     Matrix34 identity = Matrix34();
-    Skel.Update(identity);
-    SkelSkin.Update();
+//    Skel.Update(identity);
+//    SkelSkin.Update();
 //    AnimPlayer.Update();
-
+    cloth.Update(airVelocity);
 	// Tell glut to re-display the scene
 	glutSetWindow(WindowHandle);
 	glutPostRedisplay();
@@ -183,7 +191,8 @@ void Tester::Draw() {
 	Cam.Draw();		// Sets up projection & viewing matrices
 //	Cube.Draw();
 //    Skel.Draw();
-    SkelSkin.Draw();
+//    SkelSkin.Draw();
+    cloth.Draw();
 
 	// Finish drawing scene
 	glFinish();
@@ -217,27 +226,27 @@ void Tester::Keyboard(int key,int x,int y) {
 			Reset();
 			break;
         case 'a':
-            Skel.GetPrevJoint();
+//            Skel.GetPrevJoint();
             break;
         case 'd':
-            Skel.GetNextJoint();
+//            Skel.GetNextJoint();
             break;
         case 'w':
-            Skel.GetCurrentJoint()->GetNextDof();
+//            Skel.GetCurrentJoint()->GetNextDof();
             break;
         case 's':
-            Skel.GetCurrentJoint()->GetPrevDof();
+//            Skel.GetCurrentJoint()->GetPrevDof();
             break;
         case '<':{
-            Skel.GetCurrentJoint()->GetCurrentDof()->Decrement();
+//            Skel.GetCurrentJoint()->GetCurrentDof()->Decrement();
             break;
         }
         case '>':{
-            Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
+//            Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
             break;
         }
         case 'p':{
-            Skel.GetPrevJoint();
+//            Skel.GetPrevJoint();
             break;
         }
     }

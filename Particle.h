@@ -29,12 +29,14 @@ public:
     bool isFixed()                  { return fixed; }
     Vector3 getColor()              { return Color; }
     
-    void setForce(Vector3 f)        { Force = f; }
-    void setPosition(Vector3 p)     { Position = p; }
-    void setVelocity(Vector3 v)     { Velocity = v; }
+    void setForce(Vector3 f)        { Force.Set(f.x, f.y, f.z); }
+    void setPosition(Vector3 p)     { Position.Set(p.x, p.y, p.z); }
+    void setVelocity(Vector3 v)     { Velocity.Set(v.x,v.y,v.z); }
     void setMass(float m)           { mass = m; }
     void setFixed(bool f)           { fixed = f; }
-    void setColor(Vector3 c)        { Color = c; }
+    void setColor(Vector3 c)        { Color.Set(c.x, c.y, c.z); }
+    
+    void Print();
     
 private:
     float mass;
