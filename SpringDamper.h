@@ -14,6 +14,8 @@
 class SpringDamper{
 public:
     SpringDamper();
+    SpringDamper(Particle * p1, Particle * p2);
+    SpringDamper(Particle * p1, Particle * p2, float sc, float df, float rl);
     ~SpringDamper();
     void ComputeForce();
     

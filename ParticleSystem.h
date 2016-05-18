@@ -14,6 +14,8 @@
 
 class ParticleSystem{
 public:
+    ParticleSystem();
+    ParticleSystem(int w, int h);
     void Update(float deltaTime);
     void Draw();
     

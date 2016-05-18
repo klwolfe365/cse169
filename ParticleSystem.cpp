@@ -8,6 +8,12 @@
 
 #include "ParticleSystem.h"
 
+ParticleSystem::ParticleSystem(int width, int height){
+//    NumParticles = width*height;
+//    for(int i = 0; i < NumParticles; i++)
+//        Particles[i] = new Particle();
+}
+
 void ParticleSystem::Update(float deltaTime){
     Vector3 gravity(0.0, -9.8, 0.0);
     for(int i = 0; i < NumParticles; i++){
