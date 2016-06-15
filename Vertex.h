@@ -29,15 +29,6 @@ public:
     void SetNormal(Vector3 normal);
     void SetNormal(float x, float y, float z);
     
-//    std::vector<float> GetSkinweights();
-//    void SetSkinweights(int joint, float weight);
-//    
-//    std::vector<int> GetJointNums();
-//    void SetJointNums(int numattachments, std::vector<int> weights);
-    
-//    float GetSkinweightByJoint(int jointNum);
-    
-    
     int numAttachments;
     float skinweights[4];
     int joints[4];
@@ -45,8 +36,6 @@ public:
 private:
     Vector3 Position;
     Vector3 Normal;
-//    std::vector<int> jointNums;
-//    std::vector<float> skinweights;
 };
 
 #endif /* Vertex_h */

@@ -75,11 +75,8 @@ private:
     int dofNum;
     
     Vector3 color;
-//    std::list<DOF *>::iterator dofNum = dofs.begin();
-    //List<Joint *> siblings;
     
     void ClampValues();
-    
 };
 
 #endif /* Joint_h */

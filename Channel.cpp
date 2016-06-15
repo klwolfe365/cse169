@@ -91,7 +91,6 @@ void Channel::SetTangentValues(){
         } else if(strcmp(curr->getTanModeIn(), "smooth") == 0){
             float t = curr->CalculateTangent(keys[i-1], keys[i+1]);
             curr->setTanIn(t);
-//            curr->setTanOut(t);
         } else {
             curr->setTanIn(strtof(curr->getTanModeIn(), '\0'));
         }
@@ -138,7 +137,6 @@ float Channel::Evaluate(float t){
         if(t == curr->getTime())
             return curr->getValue();
         else if(t < curr->getTime()){
-//            Span * s = spans[i-1];
             float a = curr->a;
             float b = curr->b;
             float c = curr->c;
@@ -220,7 +218,6 @@ float Channel::doLinearExtrapolation(float time){
         float t0 = time;
         float tangent = keys.front()->getTanOut();
         return p1 - (tangent*(t1-t0));
-//        return p1 - (v1In * (t1 - t0));
     } else {
         float p0 = keys.back()->getValue();
         float t0 = keys.back()->getTime();
@@ -228,7 +225,6 @@ float Channel::doLinearExtrapolation(float time){
         float tangent = keys.back()->getTanIn();
         return (tangent*(t1-t0))+p0;
 
-//        return v0Out * (t1 - t0) + p0;
     }
 }
 
@@ -263,12 +259,13 @@ float Channel::doCyclicOffsetExtrapolation(float time) {
     return Evaluate(tPrime) + cIndex*offset;
 }
 
-/*TODO*/
+/* Repeats channel back in reverse to compute the value */
 float Channel::doBounceExtrapolation(float time){
     float tMin = keys.front()->getTime();
     float tMax = keys.back()->getTime();
     int cIndex = floor((time - tMin)/(tMax - tMin));
     
+    //TODO fix reversal
     float start = cIndex*(tMax-tMin)+tMin;
     float tPrime = time - start + tMin;
     if(cIndex % 2 == 0)
@@ -276,5 +273,3 @@ float Channel::doBounceExtrapolation(float time){
     else
         return Evaluate(tMax - tPrime);
 }
-
-//float Channel::EvaluateCoefficients(Keyframe* k0, Keyframe* k1){}

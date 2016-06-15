@@ -24,7 +24,6 @@ float setTangents(const char* tangentType){
     else if(strcmp(tangentType, "linear") == 0) return 0.0f;
     
     return 0.0f;
-//        return 
 }
 
 void Keyframe::SetCoefficients(Keyframe* k0, Keyframe* k1){

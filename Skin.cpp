@@ -87,7 +87,6 @@ bool Skin::Load(const char* file, Skeleton* skel){
                     if(DEBUG)
                         printf("%d %f ", jointNum, weight);
                 }
-//                vertices[n]->SetSkinweights(numAttachments, weights);
                 if(DEBUG)
                     printf("\n");
                 n++;
@@ -137,12 +136,6 @@ bool Skin::Load(const char* file, Skeleton* skel){
                          az, bz, cz, dz);
                 if(DEBUG){
                     bindings[n]->Print();
-//                            printf("\tmatrix {\n");
-//                            printf("\t\t%f %f %f\n", ax, ay, az);
-//                            printf("\t\t%f %f %f\n", bx, by, bz);
-//                            printf("\t\t%f %f %f\n", cx, cy, cz);
-//                            printf("\t\t%f %f %f\n", dx, dy, dz);
-//                            printf("\t}\n");
                 }
                 n++;
             }
