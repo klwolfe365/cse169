@@ -14,11 +14,13 @@
 #include "Rig.h"
 #include "Player.h"
 #include "Cloth.h"
+#include "ParticleSystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class Tester {
-public:    
+public:
+    static const bool ANIM_MODE = true;
     Tester(int argc,char **argv);
 	~Tester();
 
@@ -33,6 +35,7 @@ public:
 	// Event handlers
 	void Resize(int x,int y);
 	void Keyboard(int key,int x,int y);
+    void specialKeys(int key, int x, int y);
 	void MouseButton(int btn,int state,int x,int y);
 	void MouseMotion(int x,int y);
 
@@ -47,7 +50,6 @@ private:
 
 	// Components
 	Camera Cam;
-	//SpinningCube Cube;
     Skeleton Skel;
     Skin SkelSkin;
     Animation Anim;
@@ -55,6 +57,11 @@ private:
     Rig rig;
     Cloth cloth;
     Vector3 airVelocity;
+    int selectedAxis;
+    
+    ParticleSystem sph;
+    
+    static bool BEGIN;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

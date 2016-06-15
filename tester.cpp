@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 static Tester *TESTER;
+bool Tester::BEGIN = false;
 
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
@@ -27,6 +28,7 @@ static void resize(int x,int y)							{TESTER->Resize(x,y);}
 static void keyboard(unsigned char key,int x,int y)		{TESTER->Keyboard(key,x,y);}
 static void mousebutton(int btn,int state,int x,int y)	{TESTER->MouseButton(btn,state,x,y);}
 static void mousemotion(int x, int y)					{TESTER->MouseMotion(x,y);}
+static void specialkeys(int key, int x, int y)          {TESTER->specialKeys(key, x, y); }
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -55,49 +57,17 @@ Tester::Tester(int argc,char **argv) {
 	glutMotionFunc( mousemotion );
 	glutPassiveMotionFunc( mousemotion );
 	glutReshapeFunc( resize );
-
+    glutSpecialFunc( specialkeys );
 
 
 	// Initialize components
 
 	Cam.SetAspect(float(WinX)/float(WinY));
-    
-//    if(ANIM_MODE)
-//        const char * skelFilename;
-//        const char * skinFilename;
-//        const char * animFilename;
-//        if(argv[1] && argv[2]){
-//            skelFilename = argv[1];
-//            skinFilename = argv[2];
-//        }
-//        else{
-//            skelFilename = "/Users/karen/cse169/skeletons/wasp.skel";
-//            skinFilename = "/Users/karen/cse169/skins/wasp.skin";
-//        }
-//        if(argv[3])
-//            animFilename = argv[3];
-//        printf("%s\n",skinFilename);
-//        Skel.Load(skelFilename);
-//        SkelSkin.Load(skinFilename, &Skel);
-//        
-//        if(argv[3]){
-//            Anim.Load(animFilename);
-//            AnimPlayer.SetTime(Anim.GetTimeStart());
-//            AnimPlayer.SetSkeleton(&Skel);
-//            AnimPlayer.SetSkin(&SkelSkin);
-//            AnimPlayer.SetAnimation(&Anim);
-//            glutTimerFunc(33, animate, 0);
-//        }
-    
-//    else if(CLOTH_MODE)
-    //SkelSkin.PrintSkin();
-    
-//    Skel.PrintJoints();
-    
-    cloth = Cloth(4, 4);
-//    cloth.PrintParticles();
+    cloth = Cloth(10,10);
+    selectedAxis = 0;
     airVelocity.Zero();
     
+    sph = ParticleSystem(Vector3(-5, -5, -5), Vector3(5, 5, 5), 400, 0.5);
     
     /***** LIGHTING *****/
     GLfloat light_position0[] = { 6.0, 2.0, 2.0, 0.0 };
@@ -151,13 +121,10 @@ Tester::~Tester() {
 void Tester::Update() {
 	// Update the components in the world
 	Cam.Update();
-	//Cube.Update();
     Matrix34 identity = Matrix34();
-//    Skel.Update(identity);
-//    SkelSkin.Update();
-//    AnimPlayer.Update();
+    
     cloth.Update(airVelocity);
-	// Tell glut to re-display the scene
+
 	glutSetWindow(WindowHandle);
 	glutPostRedisplay();
 }
@@ -174,9 +141,7 @@ void Tester::Animate(){
 void Tester::Reset() {
 	Cam.Reset();
 	Cam.SetAspect(float(WinX)/float(WinY));
-
-	//Cube.Reset();
-//    Skel.Reset();
+    airVelocity.Zero();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,11 +154,8 @@ void Tester::Draw() {
 
 	// Draw components
 	Cam.Draw();		// Sets up projection & viewing matrices
-//	Cube.Draw();
-//    Skel.Draw();
-//    SkelSkin.Draw();
     cloth.Draw();
-
+    
 	// Finish drawing scene
 	glFinish();
 	glutSwapBuffers();
@@ -226,29 +188,85 @@ void Tester::Keyboard(int key,int x,int y) {
 			Reset();
 			break;
         case 'a':
-//            Skel.GetPrevJoint();
+            cloth.Drag(Vector3(-0.2, 0.0, 0.0));
             break;
         case 'd':
-//            Skel.GetNextJoint();
+            cloth.Drag(Vector3(0.2, 0.0, 0.0));
             break;
         case 'w':
-//            Skel.GetCurrentJoint()->GetNextDof();
+            cloth.Drag(Vector3(0.0, 0.2, 0.0));
             break;
         case 's':
-//            Skel.GetCurrentJoint()->GetPrevDof();
+            cloth.Drag(Vector3(0.0, -0.2, 0.0));
             break;
+        case 'x':
+            cloth.Drag(Vector3(0.0, 0.0, 0.2));
+            break;
+        case 'z':
+            cloth.Drag(Vector3(0.0, 0.0, -0.2));
+            break;
+        case '[':{
+            airVelocity += Vector3(-0.2, 0.0, 0.0);
+            airVelocity.Print();
+            break;
+        }
+        case ']':{
+            airVelocity += Vector3(0.2, 0.0, 0.0);
+            airVelocity.Print();
+            break;
+        }
+        case ';':{
+                airVelocity += Vector3(0.0, -0.2, 0.0);
+                airVelocity.Print();
+                break;
+            }
+        case '\'':{
+            airVelocity += Vector3(0.0, 0.0, 0.2);
+            airVelocity.Print();
+            break;
+        }
         case '<':{
-//            Skel.GetCurrentJoint()->GetCurrentDof()->Decrement();
+            airVelocity += Vector3(0.0, 0.0, -0.2);
+            airVelocity.Print();
             break;
         }
         case '>':{
-//            Skel.GetCurrentJoint()->GetCurrentDof()->Increment();
+            airVelocity += Vector3(0.0, 0.0, 0.2);
+            airVelocity.Print();
             break;
         }
         case 'p':{
-//            Skel.GetPrevJoint();
             break;
         }
+        case 'b':{
+            BEGIN = true;
+            break;
+        }
+    }
+}
+
+void Tester::specialKeys(int key, int x, int y) {
+    switch(key) {
+        case GLUT_KEY_LEFT:
+            if (selectedAxis == 0) airVelocity.x -= 2.0f;
+            if (selectedAxis == 1) airVelocity.y -= 2.0f;
+            if (selectedAxis == 2) airVelocity.z -= 2.0f;
+            airVelocity.Print();
+            break;
+        case GLUT_KEY_RIGHT:
+            if (selectedAxis == 0) airVelocity.x += 2.0f;
+            if (selectedAxis == 1) airVelocity.y += 2.0f;
+            if (selectedAxis == 2) airVelocity.z += 2.0f;
+            airVelocity.Print();
+            break;
+        case GLUT_KEY_UP:
+            if (selectedAxis > 0) selectedAxis--;
+            else selectedAxis = 2;
+            break;
+        case GLUT_KEY_DOWN:
+            if (selectedAxis < 2) selectedAxis++;
+            else selectedAxis = 0;
+            break;
     }
 }
 
