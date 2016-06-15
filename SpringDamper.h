@@ -13,8 +13,13 @@
 #include "Particle.h"
 class SpringDamper{
 public:
+    static const long SPRING_CONST = 200.0;
+    static const long DAMP_CONST = 10.0;
+    static const long REST_LENGTH = 0.5;
+    
     SpringDamper();
     SpringDamper(Particle * p1, Particle * p2);
+    SpringDamper(Particle * p1, Particle * p2, float rl);
     SpringDamper(Particle * p1, Particle * p2, float sc, float df, float rl);
     ~SpringDamper();
     void ComputeForce();
@@ -30,6 +35,10 @@ public:
     float getRestLength()               { return RestLength; }
     Particle* getP1()                   { return P1; }
     Particle* getP2()                   { return P2; }
+    
+    void Draw();
+    
+    Vector3 color;
     
 private:
     float SpringConstant;

@@ -26,8 +26,8 @@ public:
     int GetVertex1();
     int GetVertex2();
     int GetVertex3();
+    
 private:
-    //Vertex v1, v2, v3;
     int v1, v2, v3;
 };
 #endif /* Triangle_h */
