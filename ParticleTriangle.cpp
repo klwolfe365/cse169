@@ -13,7 +13,7 @@ ParticleTriangle::ParticleTriangle(){
     cd = 1.0;
 }
 
-ParticleTriangle::~ParticleTriangle(){}//TODO
+ParticleTriangle::~ParticleTriangle(){}
 
 void ParticleTriangle::SetParticles(Particle* p1, Particle* p2, Particle* p3){
     this->p1 = p1;
@@ -38,7 +38,6 @@ void ParticleTriangle::calculateNormal(){
 }
 
 void ParticleTriangle::ComputeForce(Vector3 force){
-    //TODO
     velocity = (p1->getVelocity() + p2->getVelocity() + p3->getVelocity())/3.0;
     Vector3 v = velocity - force;
     Vector3 a = p2->getPosition() - p1->getPosition();

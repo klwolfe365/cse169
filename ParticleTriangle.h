@@ -28,8 +28,8 @@ public:
     Particle* GetParticle2()            { return p2; }
     Particle* GetParticle3()            { return p3; }
     
-    void setVelocity(Vector3 v)         { velocity = v; }
-    void setNormal(Vector3 n)           { normal = n; }
+    void setVelocity(Vector3 v)         { velocity.Set(v.x, v.y, v.z); }
+    void setNormal(Vector3 n)           { normal.Set(n.x, n.y, n.z); }
     Vector3 getVelocity()               { return velocity; }
     Vector3 getNormal()                 { return normal; }
     

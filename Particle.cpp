@@ -11,6 +11,7 @@ Particle::Particle(){
     mass = 1.0f;
     Position.Zero();
     Velocity.Zero();
+    Acceleration.Zero();
     Force.Zero();
     fixed = false;
     Color = Vector3(1.0, 1.0, 1.0);
@@ -30,7 +31,7 @@ void Particle::Update(float deltaTime){
 }
 
 void Particle::Draw(){
-    glPointSize(1.5);
+    glPointSize(3.5);
     glBegin(GL_POINTS);
     glColor3f(Color.x, Color.y, Color.z);
     glVertex3f(Position.x, Position.y, Position.z);
@@ -47,6 +48,14 @@ void Particle::UpdatePosition(Vector3 pos){
     Position.x += pos.x;
     Position.y += pos.y;
     Position.z += pos.z;
+}
+
+float Particle::Kernel(float q){
+    if(q < 1.0)
+        return (2/3 - q*q + 0.5*pow(q,3));
+    if(q < 2.0)
+        return (1/6)*pow((2-q), 3);
+    return 0;
 }
 
 void Particle::Print(){
